@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>德宇专属卡网</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 光粒子背景 */
+        #particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* 爱心特效 */
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            transform: rotate(-45deg);
+            animation: heartFloat 2s ease-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+
+        .heart::after {
+            left: 10px;
+            top: 0;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: rotate(-45deg) scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: rotate(-45deg) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(-45deg) translateY(-100px) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* 星星特效 */
+        .star {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 7px solid #ffd700;
+            animation: starFloat 2s ease-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .star:before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: -5px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 7px solid #ffd700;
+            transform: rotate(-35deg);
+        }
+
+        .star:after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: -5px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 7px solid #ffd700;
+            transform: rotate(35deg);
+        }
+
+        @keyframes starFloat {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.8) rotate(360deg) translateY(-100px);
+                opacity: 0;
+            }
+        }
+
+        /* 主容器 */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* 标题区域 */
+        .header-section {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        /* 按钮容器 */
+        .button-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 跳转按钮 */
+        .jump-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .jump-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .jump-button:hover:before {
+            left: 100%;
+        }
+
+        .jump-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .jump-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* 按钮图标 */
+        .button-icon {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .button-text {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* 底部装饰 */
+        .footer-decoration {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .jump-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 光粒子背景 -->
+    <div id="particles-container"></div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 标题区域 -->
+        <div class="header-section">
+            <h1 class="main-title">德宇官网</h1>
+            <p class="subtitle">精选辅助工具 · 安全便捷 · 一键直达</p>
+        </div>
+
+        <!-- 跳转按钮 -->
+        <div class="button-container">
+            <a href="https://xadai.vip" class="jump-button" target="_blank">
+                <span class="button-icon">🎨</span>
+                <div>新号改彩名</div>
+                <div class="button-text">迷你六位数等</div>
+            </a>
+            
+            <a href="https://beimokj.com/" class="jump-button" target="_blank">
+                <span class="button-icon">⚡</span>
+                <div>北墨综合辅助</div>
+                <div class="button-text">信用分等</div>
+            </a>
+        </div>
+
+        <!-- 底部装饰 -->
+        <div class="footer-decoration">
+            <p>虚拟商品购买后不支持退换 · 请谨慎选择</p>
+        </div>
+    </div>
+
+    <script>
+        // 创建光粒子
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // 创建爱心特效
+        function createHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 2000);
+        }
+
+        // 创建星星特效
+        function createStar(x, y) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = x + 'px';
+            star.style.top = y + 'px';
+            document.body.appendChild(star);
+
+            setTimeout(() => {
+                star.remove();
+            }, 2000);
+        }
+
+        // 监听鼠标移动创建特效
+        let lastEffectTime = 0;
+        document.addEventListener('mousemove', function(e) {
+            const currentTime = Date.now();
+            if (currentTime - lastEffectTime > 300) {
+                if (Math.random() > 0.8) {
+                    if (Math.random() > 0.5) {
+                        createHeart(e.clientX, e.clientY);
+                    } else {
+                        createStar(e.clientX, e.clientY);
+                    }
+                    lastEffectTime = currentTime;
+                }
+            }
+        });
+
+        // 监听点击创建特效
+        document.addEventListener('click', function(e) {
+            if (Math.random() > 0.5) {
+                createHeart(e.clientX, e.clientY);
+            } else {
+                createStar(e.clientX, e.clientY);
+            }
+        });
+
+        // 初始化
+        createParticles();
+
+        // 添加按钮点击特效
+        document.querySelectorAll('.jump-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                // 创建多个特效
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        if (Math.random() > 0.5) {
+                            createHeart(e.clientX + Math.random() * 20 - 10, e.clientY + Math.random() * 20 - 10);
+                        } else {
+                            createStar(e.clientX + Math.random() * 20 - 10, e.clientY + Math.random() * 20 - 10);
+                        }
+                    }, i * 100);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
