@@ -3,502 +3,611 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>德宇代理卡网</title>
+    <title>AI五子棋</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* 光粒子背景 */
-        #particles-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            animation: float 20s infinite linear;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) translateX(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(100px);
-                opacity: 0;
-            }
-        }
-
-        /* 爱心特效 */
-        .heart {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #ff6b6b;
-            transform: rotate(-45deg);
-            animation: heartFloat 2s ease-out forwards;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        .heart::before,
-        .heart::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #ff6b6b;
-            border-radius: 50%;
-        }
-
-        .heart::before {
-            top: -10px;
-            left: 0;
-        }
-
-        .heart::after {
-            left: 10px;
-            top: 0;
-        }
-
-        @keyframes heartFloat {
-            0% {
-                transform: rotate(-45deg) scale(0);
-                opacity: 1;
-            }
-            50% {
-                transform: rotate(-45deg) scale(1.2);
-                opacity: 1;
-            }
-            100% {
-                transform: rotate(-45deg) translateY(-100px) scale(0.8);
-                opacity: 0;
-            }
-        }
-
-        /* 主容器 */
-        .container {
-            position: relative;
-            z-index: 10;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* 置顶图片 */
-        .hero-section {
-            text-align: center;
-            margin-bottom: 60px;
-            animation: fadeInDown 1s ease-out;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero-image {
-            width: 100%;
-            max-width: 800px;
-            height: auto;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .hero-image:hover {
-            transform: scale(1.02);
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
-        }
-
-        /* 内容区域 */
-        .content-section {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            margin: 40px 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeInUp 1s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
-        }
-
-        .description {
-            color: #fff;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 0 20px;
-        }
-
-        .feature-list {
-            list-style: none;
-            margin: 30px 0;
-        }
-
-        .feature-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 15px;
-            border-left: 4px solid #667eea;
-            transition: all 0.3s ease;
-            color: #fff;
-        }
-
-        .feature-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateX(10px);
-        }
-
-        .feature-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .feature-desc {
-            font-size: 1rem;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-
-        .price-highlight {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            margin: 30px 0;
-            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.3);
-        }
-
-        .price-text {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .price-subtext {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        /* 按钮样式 */
-        .button-container {
+            font-family: Arial, sans-serif;
             display: flex;
-            gap: 20px;
             justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 40px;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
         }
-
-        .cta-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 18px 40px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-        }
-
-        .cta-button:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s;
-        }
-
-        .cta-button:hover:before {
-            left: 100%;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
-        }
-
-        .cta-button:active {
-            transform: translateY(-1px);
-        }
-
-        /* 底部图片 */
-        .bottom-image {
+        .game-container {
             text-align: center;
-            margin-top: 60px;
-            animation: fadeInUp 1.5s ease-out;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
         }
-
-        .bottom-img {
-            width: 100%;
-            max-width: 600px;
-            height: auto;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+        .board {
+            display: inline-grid;
+            grid-template-columns: repeat(20, 25px);
+            grid-template-rows: repeat(20, 25px);
+            gap: 1px;
+            background-color: #8B4513;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px auto;
         }
-
-        .bottom-img:hover {
-            transform: scale(1.02);
+        .cell {
+            width: 25px;
+            height: 25px;
+            background-color: #DEB887;
+            border: 1px solid #8B4513;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s;
         }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .title {
-                font-size: 2rem;
-            }
-            
-            .content-section {
-                padding: 30px 20px;
-            }
-            
-            .button-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .cta-button {
-                width: 100%;
-                max-width: 300px;
-            }
+        .cell:hover {
+            background-color: #F5DEB3;
         }
-
-        /* 滚动条美化 */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .piece {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
+        .black {
+            background-color: #000;
         }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 4px;
+        .white {
+            background-color: #fff;
+            border: 1px solid #ccc;
         }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #hintBtn {
+            background-color: #2196F3;
+        }
+        #hintBtn:hover {
+            background-color: #0b7dda;
+        }
+        .status {
+            font-size: 18px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .ai-thinking {
+            color: #ff6b6b;
+        }
+        .highlight {
+            background-color: #ffeb3b !important;
+        }
+        /* 胜率面板 */
+        #winRateBox {
+            position: absolute;
+            right: -150px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            min-width: 120px;
+        }
+        #winRateBox div {
+            margin: 8px 0;
+            font-weight: bold;
+        }
+        #winRateBox div:first-child {
+            color: #000;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        #winRateBox div:last-child {
+            color: #666;
+        }
+        /* 提示闪烁动画 */
+        @keyframes hintFlash {
+            0%, 100% { background-color: #ffeb3b; }
+            50% { background-color: #deb887; }
+        }
+        .hint-flash {
+            animation: hintFlash 0.6s infinite;
+        }
+        label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
     </style>
 </head>
 <body>
-    <!-- 光粒子背景 -->
-    <div id="particles-container"></div>
-
-    <!-- 主容器 -->
-    <div class="container">
-        <!-- 置顶图片 -->
-        <div class="hero-section">
-            <img src="https://via.placeholder.com/800x400/667eea/ffffff?text=暖安+Mini+Pro+顶配版" alt="暖安 Mini Pro 顶配版" class="hero-image">
+    <div class="game-container">
+        <h1>AI五子棋对局 (20×20)</h1>
+        <div class="status" id="status">请选择一个空格开始游戏</div>
+        <div class="board" id="board"></div>
+        <div class="controls">
+            <button onclick="resetGame()">重新开始</button>
+            <button onclick="undoMove()">悔棋</button>
+            <button id="hintBtn" onclick="showOwnHint()">己方 AI 提示</button>
+            <label>
+                <input type="checkbox" id="aiFirst"> AI 先手
+            </label>
         </div>
-
-        <!-- 内容区域 -->
-        <div class="content-section">
-            <h1 class="title">德宇代理卡网</h1>
-            
-            <div class="description">
-                <p>【说明】所见即所得，顶配版一次购买，功能全解锁，终身免费更新，绝无二次消费！</p>
-            </div>
-
-            <ul class="feature-list">
-                <li class="feature-item">
-                    <div class="feature-title">【终极权限】</div>
-                    <div class="feature-desc">全图杀戮、修改伤害、瞬间传送……打破游戏内一切规则限制。</div>
-                </li>
-                <li class="feature-item">
-                    <div class="feature-title">【极致体验】</div>
-                    <div class="feature-desc">"手撸堪比剑打"只是基础，你要体验的是 "我为造物主" 的快感。</div>
-                </li>
-            </ul>
-
-            <div class="price-highlight">
-                <div class="price-text">原价上百的内容，现仅需几十元！</div>
-                <div class="price-subtext">这不是单次消费，这是对整个游戏世界的一次性买断。点击购买，开启你的传奇。</div>
-            </div>
-
-            <p style="text-align: center; color: #fff; font-size: 1.2rem; margin: 30px 0;">【点击下方图片查看】</p>
-
-            <!-- 跳转按钮 -->
-            <div class="button-container">
-                <a href="https://www.artool.icu" class="cta-button" target="_blank">代理暖安卡网</a>
-                <a href="https://www.beimokj.com/item/166" class="cta-button" target="_blank">代理卡网暖安副本</a>
-            </div>
-        </div>
-
-        <!-- 底部图片 -->
-        <div class="bottom-image">
-            <img src="https://via.placeholder.com/600x800/764ba2/ffffff?text=功能展示+Game+Features" alt="功能展示" class="bottom-img">
+        
+        <!-- 实时胜率面板 -->
+        <div id="winRateBox">
+            <div>黑胜率：<span id="blackWinRate">50.0%</span></div>
+            <div>白胜率：<span id="whiteWinRate">50.0%</span></div>
         </div>
     </div>
 
     <script>
-        // 创建光粒子
-        function createParticles() {
-            const container = document.getElementById('particles-container');
-            const particleCount = 50;
+        const BOARD_SIZE = 20;
+        const EMPTY = 0;
+        const BLACK = 1;
+        const WHITE = 2;
+        
+        let board = [];
+        let currentPlayer = BLACK;
+        let gameOver = false;
+        let moveHistory = [];
+        let aiThinking = false;
+        let hintTimer = null;
 
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 20 + 's';
-                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
-                container.appendChild(particle);
-            }
-        }
-
-        // 创建爱心特效
-        function createHeart(x, y) {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.style.left = x + 'px';
-            heart.style.top = y + 'px';
-            document.body.appendChild(heart);
-
-            setTimeout(() => {
-                heart.remove();
-            }, 2000);
-        }
-
-        // 监听鼠标移动创建爱心
-        let lastHeartTime = 0;
-        document.addEventListener('mousemove', function(e) {
-            const currentTime = Date.now();
-            if (currentTime - lastHeartTime > 500) { // 限制爱心创建频率
-                if (Math.random() > 0.7) { // 随机创建爱心
-                    createHeart(e.clientX, e.clientY);
-                    lastHeartTime = currentTime;
+        // 初始化棋盘
+        function initBoard() {
+            board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(EMPTY));
+            const boardElement = document.getElementById('board');
+            boardElement.innerHTML = '';
+            
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    cell.onclick = () => playerMove(i, j);
+                    boardElement.appendChild(cell);
                 }
             }
-        });
-
-        // 监听点击创建爱心
-        document.addEventListener('click', function(e) {
-            createHeart(e.clientX, e.clientY);
-        });
-
-        // 初始化
-        createParticles();
-
-        // 添加滚动动画
-        function addScrollAnimation() {
-            const elements = document.querySelectorAll('.content-section, .hero-section, .bottom-image');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-
-            elements.forEach(element => {
-                element.style.opacity = '0';
-                element.style.transform = 'translateY(30px)';
-                element.style.transition = 'all 0.6s ease-out';
-                observer.observe(element);
-            });
         }
 
-        // 页面加载完成后添加动画
-        window.addEventListener('load', addScrollAnimation);
+        // 玩家移动
+        function playerMove(row, col) {
+            if (gameOver || aiThinking || board[row][col] !== EMPTY) return;
+            
+            makeMove(row, col, currentPlayer);
+            
+            if (!gameOver) {
+                currentPlayer = currentPlayer === BLACK ? WHITE : BLACK;
+                if (currentPlayer === WHITE) {
+                    setTimeout(() => aiMove(), 500);
+                }
+            }
+        }
 
-        // 添加按钮点击特效
-        document.querySelectorAll('.cta-button').forEach(button => {
-            button.addEventListener('click', function(e) {
-                // 创建涟漪效果
-                const ripple = document.createElement('span');
-                const rect = this.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
+        // 执行移动
+        function makeMove(row, col, player) {
+            board[row][col] = player;
+            moveHistory.push({row, col, player});
+            
+            const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            const piece = document.createElement('div');
+            piece.className = `piece ${player === BLACK ? 'black' : 'white'}`;
+            cell.appendChild(piece);
+            
+            if (checkWin(row, col, player)) {
+                gameOver = true;
+                document.getElementById('status').textContent = 
+                    player === BLACK ? '黑棋获胜！' : '白棋获胜！';
+                highlightWinningLine(row, col, player);
+            } else if (isBoardFull()) {
+                gameOver = true;
+                document.getElementById('status').textContent = '平局！';
+            } else {
+                document.getElementById('status').textContent = 
+                    currentPlayer === BLACK ? '黑棋回合' : 'AI思考中...';
+            }
+            
+            // 更新胜率
+            updateWinRate();
+        }
+
+        // AI移动（核心算法）
+        function aiMove() {
+            if (gameOver) return;
+            
+            aiThinking = true;
+            document.getElementById('status').textContent = 'AI思考中...';
+            document.getElementById('status').className = 'status ai-thinking';
+            
+            setTimeout(() => {
+                const move = findBestMove(WHITE);
+                if (move) {
+                    makeMove(move.row, move.col, WHITE);
+                    currentPlayer = BLACK;
+                }
+                aiThinking = false;
+                document.getElementById('status').className = 'status';
+                document.getElementById('status').textContent = '黑棋回合';
+            }, 1000);
+        }
+
+        // 寻找最佳移动
+        function findBestMove(player) {
+            // 1. 首先检查是否能立即获胜
+            const winMove = findWinningMove(player);
+            if (winMove) return winMove;
+            
+            // 2. 检查是否需要阻止对手获胜
+            const opponent = player === BLACK ? WHITE : BLACK;
+            const blockMove = findWinningMove(opponent);
+            if (blockMove) return blockMove;
+            
+            // 3. 寻找双三、双四等好棋
+            const goodMove = findGoodMove(player);
+            if (goodMove) return goodMove;
+            
+            // 4. 使用评分系统选择最佳位置
+            return findBestScoredMove(player);
+        }
+
+        // 寻找获胜移动
+        function findWinningMove(player) {
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    if (board[i][j] === EMPTY) {
+                        board[i][j] = player;
+                        if (checkWin(i, j, player)) {
+                            board[i][j] = EMPTY;
+                            return {row: i, col: j};
+                        }
+                        board[i][j] = EMPTY;
+                    }
+                }
+            }
+            return null;
+        }
+
+        // 寻找好棋（双三等）
+        function findGoodMove(player) {
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    if (board[i][j] === EMPTY) {
+                        board[i][j] = player;
+                        const patterns = countPatterns(i, j, player);
+                        board[i][j] = EMPTY;
+                        
+                        if (patterns.doubleThree || patterns.doubleFour) {
+                            return {row: i, col: j};
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        // 评分系统
+        function findBestScoredMove(player) {
+            let bestScore = -Infinity;
+            let bestMove = null;
+            
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    if (board[i][j] === EMPTY) {
+                        const score = evaluatePosition(i, j, player);
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestMove = {row: i, col: j};
+                        }
+                    }
+                }
+            }
+            
+            return bestMove;
+        }
+
+        // 评估位置分数
+        function evaluatePosition(row, col, player) {
+            board[row][col] = player;
+            let score = 0;
+            
+            const patterns = countPatterns(row, col, player);
+            score += patterns.five * 100000;
+            score += patterns.openFour * 10000;
+            score += patterns.blockedFour * 1000;
+            score += patterns.openThree * 1000;
+            score += patterns.blockedThree * 100;
+            score += patterns.openTwo * 100;
+            score += patterns.blockedTwo * 10;
+            
+            // 考虑对手威胁
+            board[row][col] = EMPTY;
+            const opponent = player === BLACK ? WHITE : BLACK;
+            const opponentPatterns = countPatterns(row, col, opponent);
+            score += opponentPatterns.openFour * 5000;
+            score += opponentPatterns.openThree * 500;
+            
+            // 中心位置加分
+            const centerDistance = Math.abs(row - BOARD_SIZE/2) + Math.abs(col - BOARD_SIZE/2);
+            score += Math.max(0, 10 - centerDistance);
+            
+            return score;
+        }
+
+        // 计算模式数量
+        function countPatterns(row, col, player) {
+            const patterns = {
+                five: 0,
+                openFour: 0,
+                blockedFour: 0,
+                openThree: 0,
+                blockedThree: 0,
+                openTwo: 0,
+                blockedTwo: 0,
+                doubleThree: 0,
+                doubleFour: 0
+            };
+            
+            const directions = [
+                [0, 1], [1, 0], [1, 1], [1, -1]
+            ];
+            
+            for (const [dx, dy] of directions) {
+                const line = getLine(row, col, dx, dy, player);
+                analyzeLine(line, patterns);
+            }
+            
+            // 检查双三、双四
+            if (patterns.openThree >= 2) patterns.doubleThree = 1;
+            if (patterns.openFour >= 2) patterns.doubleFour = 1;
+            
+            return patterns;
+        }
+
+        // 获取线条
+        function getLine(row, col, dx, dy, player) {
+            const line = [];
+            
+            // 向后搜索
+            let r = row - dx, c = col - dy;
+            while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE) {
+                line.unshift(board[r][c]);
+                r -= dx;
+                c -= dy;
+            }
+            
+            line.push(player); // 当前位置
+            
+            // 向前搜索
+            r = row + dx;
+            c = col + dy;
+            while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE) {
+                line.push(board[r][c]);
+                r += dx;
+                c += dy;
+            }
+            
+            return line;
+        }
+
+        // 分析线条
+        function analyzeLine(line, patterns) {
+            const str = line.map(cell => cell === EMPTY ? '0' : cell === BLACK ? '1' : '2').join('');
+            
+            // 简化的模式匹配
+            if (str.includes('11111')) patterns.five++;
+            if (str.includes('011110')) patterns.openFour++;
+            if (str.includes('11110') || str.includes('01111')) patterns.blockedFour++;
+            if (str.includes('01110')) patterns.openThree++;
+            if (str.includes('11100') || str.includes('00111')) patterns.blockedThree++;
+            if (str.includes('0110')) patterns.openTwo++;
+            if (str.includes('1100') || str.includes('0011')) patterns.blockedTwo++;
+        }
+
+        // 检查获胜
+        function checkWin(row, col, player) {
+            const directions = [
+                [0, 1], [1, 0], [1, 1], [1, -1]
+            ];
+            
+            for (const [dx, dy] of directions) {
+                let count = 1;
                 
-                ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                ripple.classList.add('ripple');
+                // 向后计数
+                let r = row - dx, c = col - dy;
+                while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r][c] === player) {
+                    count++;
+                    r -= dx;
+                    c -= dy;
+                }
                 
-                this.appendChild(ripple);
+                // 向前计数
+                r = row + dx;
+                c = col + dy;
+                while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r][c] === player) {
+                    count++;
+                    r += dx;
+                    c += dy;
+                }
                 
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            });
-        });
+                if (count >= 5) return true;
+            }
+            
+            return false;
+        }
+
+        // 高亮获胜线条
+        function highlightWinningLine(row, col, player) {
+            const directions = [
+                [0, 1], [1, 0], [1, 1], [1, -1]
+            ];
+            
+            for (const [dx, dy] of directions) {
+                const cells = [];
+                let count = 1;
+                cells.push([row, col]);
+                
+                let r = row - dx, c = col - dy;
+                while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r][c] === player) {
+                    count++;
+                    cells.unshift([r, c]);
+                    r -= dx;
+                    c -= dy;
+                }
+                
+                r = row + dx;
+                c = col + dy;
+                while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r][c] === player) {
+                    count++;
+                    cells.push([r, c]);
+                    r += dx;
+                    c += dy;
+                }
+                
+                if (count >= 5) {
+                    cells.forEach(([r, c]) => {
+                        const cell = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+                        cell.classList.add('highlight');
+                    });
+                    break;
+                }
+            }
+        }
+
+        // 检查棋盘是否满
+        function isBoardFull() {
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    if (board[i][j] === EMPTY) return false;
+                }
+            }
+            return true;
+        }
+
+        // 己方 AI 提示
+        function showOwnHint() {
+            if (gameOver || aiThinking) return;
+            
+            clearHintFlash(); // 清除之前的闪烁
+            
+            const move = findBestMove(BLACK); // 为黑方（玩家）找最佳落子
+            if (!move) return;
+            
+            const cell = document.querySelector(`[data-row="${move.row}"][data-col="${move.col}"]`);
+            cell.classList.add('hint-flash');
+            
+            // 5 秒后自动停止闪烁
+            hintTimer = setTimeout(clearHintFlash, 5000);
+        }
+
+        function clearHintFlash() {
+            document.querySelectorAll('.hint-flash').forEach(c => c.classList.remove('hint-flash'));
+            if (hintTimer) {
+                clearTimeout(hintTimer);
+                hintTimer = null;
+            }
+        }
+
+        // 实时胜率更新
+        function updateWinRate() {
+            let blackScore = 0, whiteScore = 0;
+            
+            // 评估当前局面
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    if (board[i][j] === EMPTY) {
+                        const blackEval = evaluatePosition(i, j, BLACK);
+                        const whiteEval = evaluatePosition(i, j, WHITE);
+                        blackScore += blackEval;
+                        whiteScore += whiteEval;
+                    }
+                }
+            }
+            
+            // 添加已落子权重
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+                    if (board[i][j] === BLACK) {
+                        blackScore += 1000;
+                    } else if (board[i][j] === WHITE) {
+                        whiteScore += 1000;
+                    }
+                }
+            }
+            
+            const total = blackScore + whiteScore;
+            const blackRate = total > 0 ? (blackScore / total * 100).toFixed(1) : 50.0;
+            const whiteRate = total > 0 ? (whiteScore / total * 100).toFixed(1) : 50.0;
+            
+            document.getElementById('blackWinRate').textContent = blackRate + '%';
+            document.getElementById('whiteWinRate').textContent = whiteRate + '%';
+        }
+
+        // 悔棋
+        function undoMove() {
+            if (moveHistory.length < 2 || gameOver) return;
+            
+            // 撤销两步（玩家和AI）
+            for (let i = 0; i < 2; i++) {
+                const lastMove = moveHistory.pop();
+                if (lastMove) {
+                    board[lastMove.row][lastMove.col] = EMPTY;
+                    const cell = document.querySelector(`[data-row="${lastMove.row}"][data-col="${lastMove.col}"]`);
+                    const piece = cell.querySelector('.piece');
+                    if (piece) piece.remove();
+                }
+            }
+            
+            currentPlayer = BLACK;
+            gameOver = false;
+            document.getElementById('status').textContent = '黑棋回合';
+            updateWinRate();
+        }
+
+        // 重置游戏
+        function resetGame() {
+            gameOver = false;
+            currentPlayer = BLACK;
+            moveHistory = [];
+            aiThinking = false;
+            clearHintFlash();
+            document.getElementById('status').textContent = '请选择一个空格开始游戏';
+            document.getElementById('status').className = 'status';
+            
+            initBoard();
+            updateWinRate();
+            
+            if (document.getElementById('aiFirst').checked) {
+                currentPlayer = WHITE;
+                setTimeout(() => aiMove(), 500);
+            }
+        }
+
+        // 初始化
+        window.onload = function() {
+            initBoard();
+            updateWinRate();
+        };
     </script>
 </body>
 </html>
