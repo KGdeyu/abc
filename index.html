@@ -3,1327 +3,1186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>追光社交系统</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>德宇MiniTool·迷你世界辅助</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
-        :root { --primary-color: #2ecc71; --primary-dark: #27ae60; --primary-light: #e8f8ef; --secondary-color: #3498db; --secondary-dark: #2980b9; --danger-color: #e74c3c; --warning-color: #f39c12; --dark-color: #2c3e50; --light-color: #ecf0f1; --gray-color: #95a5a6; --gray-light: #f8f9fa; --gray-border: #dfe6e9; --white: #ffffff; --shadow: 0 4px 12px rgba(0, 0, 0, 0.08); --radius: 12px; --transition: all 0.3s ease; }
-        body { background-color: var(--gray-light); color: var(--dark-color); min-height: 100vh; overflow-x: hidden; }
-        .header { background-color: var(--white); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); padding: 16px 0; border-bottom: 1px solid var(--gray-border); position: sticky; top: 0; z-index: 100; }
-        .header-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; font-size: 24px; font-weight: 700; color: var(--primary-color); text-decoration: none; }
-        .logo-icon { margin-right: 10px; font-size: 28px; }
-        .notification-icon { position: relative; font-size: 22px; color: var(--dark-color); cursor: pointer; padding: 8px; border-radius: 50%; transition: var(--transition); }
-        .notification-icon:hover { background-color: var(--primary-light); color: var(--primary-color); }
-        .notification-badge { position: absolute; top: -2px; right: -2px; background-color: var(--danger-color); color: white; border-radius: 50%; min-width: 18px; height: 18px; font-size: 11px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
-        .chat-header { display: flex; align-items: center; padding: 0 10px; }
-        .back-btn { background: none; border: none; font-size: 20px; color: var(--dark-color); cursor: pointer; padding: 8px; margin-right: 12px; border-radius: 50%; transition: var(--transition); }
-        .back-btn:hover { background-color: var(--light-color); }
-        .chat-header-info { flex-grow: 1; }
-        .chat-title { font-size: 18px; font-weight: 600; margin-bottom: 2px; }
-        .chat-subtitle { font-size: 12px; color: var(--gray-color); }
-        .chat-actions { display: flex; gap: 10px; }
-        .chat-action-btn { background: none; border: none; font-size: 20px; color: var(--dark-color); cursor: pointer; padding: 8px; border-radius: 50%; transition: var(--transition); }
-        .chat-action-btn:hover { background-color: var(--light-color); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--white); border-top: 1px solid var(--gray-border); padding: 12px 0; display: flex; justify-content: space-around; z-index: 100; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--gray-color); text-decoration: none; font-size: 12px; transition: var(--transition); padding: 8px 16px; border-radius: 8px; }
-        .nav-item i { font-size: 22px; margin-bottom: 4px; }
-        .nav-item.active { color: var(--primary-color); background-color: var(--primary-light); font-weight: 600; }
-        .nav-item:hover { color: var(--primary-color); }
-        .main-content { padding-bottom: 80px; }
-        .page { display: none; animation: fadeIn 0.3s ease; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .page-title { font-size: 28px; font-weight: 700; color: var(--dark-color); }
-        .page-subtitle { font-size: 16px; color: var(--gray-color); margin-top: 4px; }
-        .add-btn { background-color: var(--primary-color); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: var(--transition); box-shadow: var(--shadow); }
-        .add-btn:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
-        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; color: var(--gray-color); }
-        .empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.5; }
-        .empty-title { font-size: 20px; font-weight: 600; margin-bottom: 10px; color: var(--dark-color); }
-        .empty-description { max-width: 300px; line-height: 1.6; }
-        .list-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        @media (max-width: 768px) { .list-container { grid-template-columns: 1fr; } }
-        .card { background-color: var(--white); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid var(--gray-border); }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); }
-        .card-header { display: flex; align-items: center; margin-bottom: 16px; }
-        .avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 16px; border: 3px solid var(--primary-light); cursor: pointer; }
-        .avatar-placeholder { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 24px; color: white; margin-right: 16px; border: 3px solid var(--primary-light); cursor: pointer; }
-        .card-info { flex-grow: 1; }
-        .card-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: var(--dark-color); }
-        .card-subtitle { font-size: 14px; color: var(--gray-color); }
-        .card-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
-        .btn { padding: 8px 16px; border-radius: 6px; border: none; font-weight: 500; cursor: pointer; transition: var(--transition); font-size: 14px; }
-        .btn-primary { background-color: var(--primary-color); color: white; }
-        .btn-primary:hover { background-color: var(--primary-dark); }
-        .btn-secondary { background-color: var(--light-color); color: var(--dark-color); }
-        .btn-secondary:hover { background-color: #dde4e6; }
-        .btn-danger { background-color: var(--danger-color); color: white; }
-        .btn-danger:hover { background-color: #c0392b; }
-        .btn-warning { background-color: var(--warning-color); color: white; }
-        .btn-warning:hover { background-color: #e67e22; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
-        .modal.active { display: flex; }
-        .modal-content { background-color: var(--white); border-radius: var(--radius); width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .modal-header { padding: 24px; border-bottom: 1px solid var(--gray-border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-title { font-size: 20px; font-weight: 600; color: var(--dark-color); }
-        .modal-close { background: none; border: none; font-size: 24px; color: var(--gray-color); cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
-        .modal-close:hover { background-color: var(--light-color); color: var(--dark-color); }
-        .modal-body { padding: 24px; }
-        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--gray-border); display: flex; justify-content: flex-end; gap: 12px; }
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--dark-color); }
-        .form-input { width: 100%; padding: 12px 16px; border: 1px solid var(--gray-border); border-radius: 8px; font-size: 16px; transition: var(--transition); background-color: var(--white); }
-        .form-input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1); }
-        .form-textarea { min-height: 100px; resize: vertical; }
-        .char-count { font-size: 12px; color: var(--gray-color); margin-top: 4px; text-align: right; }
-        .char-count.warning { color: var(--warning-color); }
-        .char-count.danger { color: var(--danger-color); }
-        .avatar-upload { display: flex; align-items: center; gap: 20px; }
-        .avatar-preview { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-light); }
-        .avatar-placeholder-large { width: 100px; height: 100px; border-radius: 50%; background-color: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 36px; color: var(--primary-color); border: 3px dashed var(--primary-color); }
-        .upload-btn { background-color: var(--light-color); border: 2px dashed var(--gray-border); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: var(--transition); }
-        .upload-btn:hover { border-color: var(--primary-color); background-color: var(--primary-light); }
-        .upload-btn i { font-size: 24px; color: var(--primary-color); margin-bottom: 8px; }
-        .upload-text { font-size: 14px; color: var(--gray-color); }
-        .profile-header { text-align: center; margin-bottom: 40px; }
-        .profile-avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-light); margin: 0 auto 20px; display: block; }
-        .profile-name { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: var(--dark-color); }
-        .profile-username { font-size: 16px; color: var(--gray-color); margin-bottom: 24px; }
-        .profile-stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 40px; }
-        .stat-item { text-align: center; }
-        .stat-value { display: block; font-size: 28px; font-weight: 700; color: var(--primary-color); margin-bottom: 4px; }
-        .stat-label { font-size: 14px; color: var(--gray-color); }
-        .settings-list { background-color: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 30px; }
-        .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--gray-border); text-decoration: none; color: var(--dark-color); transition: var(--transition); }
-        .settings-item:last-child { border-bottom: none; }
-        .settings-item:hover { background-color: var(--light-color); }
-        .settings-item i { font-size: 20px; color: var(--gray-color); margin-right: 16px; width: 24px; text-align: center; }
-        .settings-item-content { flex-grow: 1; }
-        .settings-item-title { font-weight: 500; margin-bottom: 4px; }
-        .settings-item-desc { font-size: 14px; color: var(--gray-color); }
-        .settings-item-arrow { color: var(--gray-color); font-size: 14px; }
-        .account-list { background-color: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
-        .account-item { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid var(--gray-border); }
-        .account-item:last-child { border-bottom: none; }
-        .account-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 16px; border: 2px solid var(--primary-light); }
-        .account-info { flex-grow: 1; }
-        .account-name { font-weight: 500; margin-bottom: 4px; }
-        .account-username { font-size: 14px; color: var(--gray-color); }
-        .account-active { color: var(--primary-color); font-weight: 600; }
-        .toast { position: fixed; top: 20px; right: 20px; background-color: var(--dark-color); color: white; padding: 16px 24px; border-radius: 8px; box-shadow: var(--shadow); z-index: 1001; display: flex; align-items: center; justify-content: space-between; max-width: 350px; animation: slideInRight 0.3s ease; }
-        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .toast-success { background-color: var(--primary-color); }
-        .toast-error { background-color: var(--danger-color); }
-        .toast-warning { background-color: var(--warning-color); }
-        .toast-close { background: none; border: none; color: white; font-size: 20px; margin-left: 16px; cursor: pointer; }
-        .auth-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); }
-        .auth-box { background-color: var(--white); border-radius: var(--radius); padding: 40px; width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); }
-        .auth-tabs { display: flex; margin-bottom: 30px; border-bottom: 1px solid var(--gray-border); }
-        .auth-tab { flex: 1; padding: 12px; text-align: center; font-weight: 500; color: var(--gray-color); cursor: pointer; transition: var(--transition); border-bottom: 3px solid transparent; }
-        .auth-tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
-        .auth-form { display: none; }
-        .auth-form.active { display: block; }
-        .auth-title { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 8px; color: var(--dark-color); }
-        .auth-subtitle { text-align: center; color: var(--gray-color); margin-bottom: 30px; }
-        .auth-footer { text-align: center; margin-top: 20px; color: var(--gray-color); }
-        .auth-link { color: var(--primary-color); text-decoration: none; font-weight: 500; }
-        .steps { display: flex; margin-bottom: 30px; }
-        .step { flex: 1; text-align: center; position: relative; }
-        .step:not(:last-child)::after { content: ''; position: absolute; top: 20px; left: 50%; width: 100%; height: 2px; background-color: var(--gray-border); z-index: 1; }
-        .step-circle { width: 40px; height: 40px; border-radius: 50%; background-color: var(--light-color); color: var(--gray-color); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; position: relative; z-index: 2; font-weight: 600; transition: var(--transition); }
-        .step.active .step-circle { background-color: var(--primary-color); color: white; }
-        .step-label { font-size: 14px; color: var(--gray-color); }
-        .step.active .step-label { color: var(--primary-color); font-weight: 500; }
-        .friend-requests-list { background-color: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 30px; }
-        .friend-request-item { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid var(--gray-border); }
-        .friend-request-item:last-child { border-bottom: none; }
-        .friend-request-info { flex-grow: 1; margin-left: 16px; }
-        .friend-request-name { font-weight: 500; margin-bottom: 4px; }
-        .friend-request-username { font-size: 14px; color: var(--gray-color); margin-bottom: 8px; }
-        .friend-request-actions { display: flex; gap: 10px; }
-        .chat-page { display: none; }
-        .chat-page.active { display: block; }
-        .chat-container { display: flex; flex-direction: column; height: calc(100vh - 130px); background-color: var(--white); }
-        .chat-messages { flex-grow: 1; padding: 20px; overflow-y: auto; background-color: #f0f2f5; }
-        .message { display: flex; margin-bottom: 16px; position: relative; animation: messageSlide 0.3s ease; }
-        @keyframes messageSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .message.own { flex-direction: row-reverse; }
-        .message-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin: 0 12px; cursor: pointer; }
-        .message-content { max-width: 70%; background-color: var(--white); border-radius: 18px; padding: 12px 16px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); position: relative; cursor: pointer; }
-        .message.own .message-content { background-color: var(--primary-light); }
-        .message-sender { font-weight: 500; margin-bottom: 4px; font-size: 14px; color: var(--secondary-color); }
-        .message-text { line-height: 1.5; word-break: break-word; }
-        .message-time { font-size: 12px; color: var(--gray-color); margin-top: 4px; text-align: right; }
-        .reply-indicator { background-color: var(--light-color); border-left: 3px solid var(--primary-color); padding: 8px 12px; margin-bottom: 8px; border-radius: 4px; font-size: 14px; }
-        .mention { color: var(--secondary-color); font-weight: 500; background-color: rgba(52, 152, 219, 0.1); padding: 0 4px; border-radius: 4px; }
-        .chat-input-container { padding: 16px; border-top: 1px solid var(--gray-border); background-color: var(--white); }
-        .reply-preview { background-color: var(--light-color); padding: 12px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .reply-info { flex-grow: 1; }
-        .reply-sender { font-weight: 500; font-size: 14px; }
-        .reply-text { font-size: 13px; color: var(--gray-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px; }
-        .cancel-reply { background: none; border: none; color: var(--gray-color); font-size: 18px; cursor: pointer; }
-        .chat-input-wrapper { display: flex; gap: 12px; }
-        .chat-input { flex-grow: 1; padding: 12px 16px; border: 1px solid var(--gray-border); border-radius: 24px; font-size: 16px; outline: none; }
-        .chat-input:focus { border-color: var(--primary-color); }
-        .send-btn { background-color: var(--primary-color); color: white; border: none; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: var(--transition); }
-        .send-btn:hover { background-color: var(--primary-dark); }
-        .announcement { background-color: #fff9e6; border-left: 4px solid var(--warning-color); padding: 16px; margin-bottom: 20px; border-radius: 8px; }
-        .announcement-title { font-weight: 600; margin-bottom: 8px; color: #d35400; display: flex; align-items: center; gap: 8px; }
-        .announcement-content { line-height: 1.6; }
-        .announcement-time { font-size: 12px; color: var(--gray-color); margin-top: 8px; text-align: right; }
-        .tabs { display: flex; border-bottom: 1px solid var(--gray-border); margin-bottom: 20px; }
-        .tab { padding: 12px 24px; cursor: pointer; font-weight: 500; color: var(--gray-color); border-bottom: 3px solid transparent; transition: var(--transition); }
-        .tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .friend-note { font-size: 12px; color: var(--gray-color); font-style: italic; margin-top: 4px; }
-        .context-menu { position: fixed; background-color: var(--white); border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); z-index: 1002; min-width: 180px; overflow: hidden; }
-        .context-menu-item { padding: 12px 16px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 12px; }
-        .context-menu-item:hover { background-color: var(--light-color); }
-        .context-menu-item i { width: 20px; text-align: center; }
-        .hidden { display: none !important; }
-        .new-message-indicator { position: absolute; top: -5px; right: -5px; width: 10px; height: 10px; background-color: var(--danger-color); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
-        .group-settings-section { margin-bottom: 20px; }
-        .group-settings-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--dark-color); }
-        .group-member-list { max-height: 200px; overflow-y: auto; }
-        .group-member-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid var(--gray-border); }
-        .group-member-item:last-child { border-bottom: none; }
-        .group-member-avatar { width: 40px; height: 40px; border-radius: 50%; margin-right: 12px; }
-        .group-member-info { flex-grow: 1; }
-        .group-member-name { font-weight: 500; }
-        .group-member-role { font-size: 12px; color: var(--gray-color); }
-        .group-invite-code { background-color: var(--primary-light); padding: 12px; border-radius: 8px; text-align: center; margin: 16px 0; }
-        .group-invite-code-value { font-size: 24px; font-weight: 700; color: var(--primary-color); letter-spacing: 4px; }
-        .group-invite-code-label { font-size: 12px; color: var(--gray-color); margin-top: 4px; }
+        :root {
+            --bg: #0a0a0f;
+            --fg: #f0f0f5;
+            --muted: #6b6b7b;
+            --accent: #00ffd5; /* 青色 */
+            --accent-warm: #ff6b35; /* 橙色 */
+            --card: rgba(20, 20, 30, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --glow: rgba(0, 255, 213, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* 彩色渐变文字样式 */
+        .gradient-text {
+            background: linear-gradient(135deg, #ff6b35 0%, #00ffd5 25%, #8b5cf6 50%, #ff6b35 75%, #00ffd5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientMove 3s ease infinite;
+        }
+        
+        .stat-gradient {
+            background: linear-gradient(135deg, #ff6b35 0%, #00ffd5 50%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .btn-gradient-outline {
+            background: transparent;
+            color: var(--fg);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            background-origin: border-box;
+            background-image: linear-gradient(135deg, #ff6b35, #00ffd5, #8b5cf6);
+            background-size: 200% 200%;
+            animation: gradientMove 3s ease infinite;
+        }
+        
+        .btn-gradient-outline:hover {
+            color: var(--accent);
+            animation: gradientMove 1.5s ease infinite;
+        }
+
+        /* Canvas Background */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Noise Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 2rem;
+            backdrop-filter: blur(12px);
+            background: rgba(10, 10, 15, 0.7);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.4s ease;
+        }
+
+        .nav.scrolled {
+            padding: 1rem 2rem;
+            background: rgba(10, 10, 15, 0.95);
+        }
+
+        .nav-link {
+            position: relative;
+            color: var(--muted);
+            transition: color 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--fg);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 12vw, 10rem);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 0.95;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: var(--muted);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-top: 1.5rem;
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .floating-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent);
+            top: 20%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .floating-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent-warm);
+            bottom: 10%;
+            right: -5%;
+            animation-delay: -7s;
+        }
+
+        .floating-3 {
+            width: 200px;
+            height: 200px;
+            background: #8b5cf6;
+            top: 60%;
+            left: 50%;
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 30px) scale(1.02); }
+        }
+
+        /* Grid Pattern */
+        .grid-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+        }
+
+        /* Sections */
+        .section {
+            padding: 8rem 2rem;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 1.125rem;
+            max-width: 600px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 255, 213, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 60px var(--glow);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-number {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent);
+            opacity: 0.15;
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Service Icon */
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), rgba(0, 255, 213, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Works Grid */
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .work-item {
+            position: relative;
+            aspect-ratio: 16/10;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--card);
+            border: 1px solid var(--border);
+        }
+
+        .work-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .work-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .work-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10, 10, 15, 0.95) 0%, transparent 60%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .work-item:hover .work-overlay {
+            opacity: 1;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 100px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 213, 0.3);
+        }
+
+        .stat-number {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 700;
+        }
+
+        /* Marquee */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+        }
+
+        .marquee-item {
+            display: inline-block;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 600;
+            color: var(--muted);
+            margin: 0 3rem;
+            transition: color 0.3s ease;
+        }
+
+        .marquee-item:hover {
+            color: var(--accent);
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Contact Form */
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--fg);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--glow);
+        }
+
+        .form-input::placeholder {
+            color: var(--muted);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--border);
+            background: rgba(5, 5, 10, 0.5);
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--muted);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 101;
+        }
+
+        .mobile-menu-btn span {
+            width: 24px;
+            height: 2px;
+            background: var(--fg);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 15, 0.98);
+            z-index: 99;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--fg);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: clamp(2.5rem, 15vw, 5rem);
+            }
+
+            .section {
+                padding: 4rem 1.5rem;
+            }
+
+            .floating-element {
+                opacity: 0.2;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .marquee-content {
+                animation: none;
+            }
+            
+            .gradient-text, .stat-gradient, .btn-gradient-outline {
+                animation: none;
+                background-position: 0% 50%;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- 登录/注册页面 -->
-    <div id="authPage" class="auth-container">
-        <div class="auth-box">
-            <div class="auth-tabs">
-                <div class="auth-tab active" data-tab="login">登录</div>
-                <div class="auth-tab" data-tab="register">注册</div>
+    <!-- Background Canvas -->
+    <canvas id="bgCanvas"></canvas>
+    
+    <!-- Noise Overlay -->
+    <div class="noise-overlay"></div>
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <a href="#" class="font-display text-xl font-bold tracking-tight">
+                    <span class="text-accent">德宇</span>Mini</span>Tool
+                </a>
+                
+                <div class="nav-links hidden md:flex items-center gap-8">
+                    <a href="#about" class="nav-link">关于</a>
+                    <a href="#services" class="nav-link">产品</a>
+                    <a href="#works" class="nav-link">功能</a>
+                    <a href="#contact" class="nav-link">反馈</a>
+                </div>
+
+                <button class="mobile-menu-btn" aria-label="打开菜单">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
-            <div id="loginForm" class="auth-form active">
-                <h2 class="auth-title">欢迎回来</h2>
-                <p class="auth-subtitle">登录您的账户继续使用</p>
-                <div class="form-group">
-                    <label for="loginUsername" class="form-label">用户名</label>
-                    <input type="text" id="loginUsername" class="form-input" placeholder="请输入用户名">
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword" class="form-label">密码</label>
-                    <input type="password" id="loginPassword" class="form-input" placeholder="请输入密码">
-                </div>
-                <button class="btn btn-primary" id="loginBtn" style="width: 100%; padding: 14px; font-size: 16px;">登录</button>
-                <div class="auth-footer">
-                    <p>还没有账户？ <a href="#" class="auth-link" id="goToRegister">免费注册</a></p>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu">
+            <a href="#about">关于</a>
+            <a href="#services">产品</a>
+            <a href="#works">功能</a>
+            <a href="#contact">反馈</a>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="floating-element floating-1"></div>
+            <div class="floating-element floating-2"></div>
+            <div class="floating-element floating-3"></div>
+            <div class="grid-pattern"></div>
+            
+            <div class="text-center relative z-10 px-4">
+                <p class="hero-subtitle reveal">一个迷你世界的辅助工具</p>
+                <h1 class="hero-title font-display gradient-text reveal" style="transition-delay: 0.1s">
+                    德宇 Mini Tool
+                </h1>
+                <p class="mt-8 text-lg text-gray-400 max-w-xl mx-auto reveal" style="transition-delay: 0.2s">
+                    让每个人都能享受科技的乐趣
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-10 reveal" style="transition-delay: 0.3s">
+                    <button class="btn btn-primary" id="downloadBtn">
+                        立即下载
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                    <button class="btn btn-gradient-outline" id="purchaseBtn">
+                        立即购买
+                    </button>
                 </div>
             </div>
-            <div id="registerForm" class="auth-form">
-                <div class="steps">
-                    <div class="step active" id="step1"><div class="step-circle">1</div><div class="step-label">创建账户</div></div>
-                    <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">设置信息</div></div>
-                </div>
-                <div id="registerStep1">
-                    <h2 class="auth-title">免费注册账户</h2>
-                    <p class="auth-subtitle">无需手机号，创建您的专属账户</p>
-                    <div class="form-group">
-                        <label for="registerUsername" class="form-label">用户名</label>
-                        <input type="text" id="registerUsername" class="form-input" placeholder="请输入用户名（3-20位字符）">
-                        <div id="registerUsernameCount" class="char-count">0/20</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerPassword" class="form-label">密码</label>
-                        <input type="password" id="registerPassword" class="form-input" placeholder="请输入密码（至少6位）">
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmPassword" class="form-label">确认密码</label>
-                        <input type="password" id="confirmPassword" class="form-input" placeholder="请再次输入密码">
-                    </div>
-                    <button class="btn btn-primary" id="registerNextBtn" style="width: 100%; padding: 14px; font-size: 16px;">下一步：设置信息</button>
-                    <div class="auth-footer">
-                        <p>已有账户？ <a href="#" class="auth-link" id="goToLogin">立即登录</a></p>
-                    </div>
-                </div>
-                <div id="registerStep2" class="hidden">
-                    <h2 class="auth-title">设置个人信息</h2>
-                    <p class="auth-subtitle">这将作为您在平台上的公开信息</p>
-                    <div class="form-group">
-                        <label class="form-label">头像</label>
-                        <div class="avatar-upload">
-                            <div id="avatarPreview" class="avatar-placeholder-large"><i class="fas fa-user"></i></div>
-                            <div class="upload-btn" id="avatarUploadBtn">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <div class="upload-text">点击上传头像</div>
-                                <input type="file" id="avatarFile" accept="image/*" class="hidden">
+
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-500">
+                <span class="text-xs tracking-widest">综合各大功能</span>
+                <div class="w-px h-12 bg-gradient-to-b from-gray-500 to-transparent"></div>
+            </div>
+        </section>
+
+        <!-- Marquee Section -->
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <span class="marquee-item">联机功能</span>
+                <span class="marquee-item">·</span>
+                <span class="marquee-item">其他功能</span>
+                <span class="marquee-item">·</span>
+                <span class="marquee-item">修改功能</span>
+                <span class="marquee-item">·</span>
+                <span class="marquee-item">绘制功能</span>
+                <span class="marquee-item">·</span>
+                <span class="marquee-item">德宇Mini</span>
+                <span class="marquee-item">·</span>
+                <span class="marquee-item">联机功能</span>
+                <span class="marquee-item">·</span>
+                <span class="marquee-item">其他功能</span>
+                <span class="marquee-item">·</span>
+                <span class="marquee-item">修改功能</span>
+                <span class="marquee-item">·</span>
+                <span class="marquee-item">绘制功能</span>
+                <span class="marquee-item">·</span>
+                <span class="marquee-item">德宇Mini</span>
+                <span class="marquee-item">·</span>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                    <div class="reveal">
+                        <span class="text-accent text-sm tracking-widest uppercase">关于我们</span>
+                        <h2 class="section-title mt-4">此辅助支持1年了</h2>
+                        <p class="section-subtitle mt-6">
+                            从2025年6月开始做到现在，仍然还在公益中。
+                        </p>
+                        <div class="grid grid-cols-2 gap-8 mt-12">
+                            <div>
+                                <div class="stat-number font-display stat-gradient">99+</div>
+                                <p class="text-muted mt-2">使用人数</p>
+                            </div>
+                            <div>
+                                <div class="stat-number font-display stat-gradient">66%</div>
+                                <p class="text-muted mt-2">经济发展</p>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="displayName" class="form-label">显示名称</label>
-                        <input type="text" id="displayName" class="form-input" placeholder="请输入显示名称（最多10个字）">
-                        <div id="displayNameCount" class="char-count">0/10</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="realName" class="form-label">真实姓名（用于好友验证）</label>
-                        <input type="text" id="realName" class="form-input" placeholder="请输入真实姓名（最多10个字）">
-                        <div id="realNameCount" class="char-count">0/10</div>
-                    </div>
-                    <button class="btn btn-primary" id="registerCompleteBtn" style="width: 100%; padding: 14px; font-size: 16px;">完成注册</button>
-                    <div class="auth-footer">
-                        <p>返回上一步？ <a href="#" class="auth-link" id="backToStep1">返回账户设置</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="appPage" class="hidden">
-        <div class="header main-header">
-            <div class="header-container">
-                <a href="#" class="logo" id="goHome"><i class="fas fa-bolt logo-icon"></i><span>追光社交</span></a>
-                <div class="notification-icon" id="notificationBtn"><i class="fas fa-bell"></i><span class="notification-badge hidden" id="notificationCount">0</span></div>
-            </div>
-        </div>
-        <div class="header chat-header hidden" id="chatHeader">
-            <div class="header-container">
-                <div class="chat-header">
-                    <button class="back-btn" id="backFromChat"><i class="fas fa-arrow-left"></i></button>
-                    <div class="chat-header-info">
-                        <div class="chat-title" id="chatTitle">聊天</div>
-                        <div class="chat-subtitle" id="chatSubtitle">在线</div>
-                    </div>
-                    <div class="chat-actions">
-                        <button class="chat-action-btn" id="chatInfoBtn"><i class="fas fa-ellipsis-v"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="main-content">
-                <div id="friendsPage" class="page active">
-                    <div class="page-header">
-                        <div><h1 class="page-title">好友</h1><p class="page-subtitle" id="friendsCount">0 位好友</p></div>
-                        <button class="add-btn" id="addFriendBtn"><i class="fas fa-user-plus"></i></button>
-                    </div>
-                    <div class="tabs">
-                        <div class="tab active" data-tab="friends">好友列表</div>
-                        <div class="tab" data-tab="requests">好友请求</div>
-                        <div class="tab" data-tab="blocked">已拉黑</div>
-                    </div>
-                    <div id="friendsTab" class="tab-content active">
-                        <div id="friendsList" class="list-container"></div>
-                        <div id="friendsEmpty" class="empty-state hidden"><i class="fas fa-user-friends empty-icon"></i><h3 class="empty-title">您还没有好友</h3><p class="empty-description">点击右上角添加按钮，开始添加好友吧</p></div>
-                    </div>
-                    <div id="requestsTab" class="tab-content">
-                        <div id="friendRequestsList" class="friend-requests-list"></div>
-                        <div id="noRequests" class="empty-state"><i class="fas fa-user-clock empty-icon"></i><h3 class="empty-title">暂无好友请求</h3><p class="empty-description">当有人添加您为好友时，请求将显示在这里</p></div>
-                    </div>
-                    <div id="blockedTab" class="tab-content">
-                        <div id="blockedList" class="list-container"></div>
-                        <div id="noBlocked" class="empty-state"><i class="fas fa-user-slash empty-icon"></i><h3 class="empty-title">暂无拉黑的好友</h3><p class="empty-description">您拉黑的好友将显示在这里</p></div>
-                    </div>
-                </div>
-                <div id="groupsPage" class="page">
-                    <div class="page-header">
-                        <div><h1 class="page-title">群聊</h1><p class="page-subtitle" id="groupsCount">0 个群聊</p></div>
-                        <button class="add-btn" id="addGroupBtn"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div id="groupsList" class="list-container"></div>
-                    <div id="groupsEmpty" class="empty-state hidden"><i class="fas fa-users empty-icon"></i><h3 class="empty-title">您还没有群聊</h3><p class="empty-description">点击右上角添加按钮，创建或加入群聊</p></div>
-                </div>
-                <div id="profilePage" class="page">
-                    <div class="profile-header">
-                        <img id="profileAvatarImg" class="profile-avatar hidden" src="" alt="头像">
-                        <div id="profileAvatarPlaceholder" class="profile-avatar avatar-placeholder-large"><i class="fas fa-user"></i></div>
-                        <h2 class="profile-name" id="profileName">用户名称</h2>
-                        <p class="profile-username" id="profileUsername">@username</p>
-                        <div class="profile-stats">
-                            <div class="stat-item"><span class="stat-value" id="profileFriendCount">0</span><span class="stat-label">好友</span></div>
-                            <div class="stat-item"><span class="stat-value" id="profileGroupCount">0</span><span class="stat-label">群聊</span></div>
-                        </div>
-                    </div>
-                    <div class="settings-list">
-                        <a href="#" class="settings-item" id="profileSettingsBtn"><i class="fas fa-user-cog"></i><div class="settings-item-content"><div class="settings-item-title">个人资料与安全</div><div class="settings-item-desc">管理您的个人资料和账户安全</div></div><i class="fas fa-chevron-right settings-item-arrow"></i></a>
-                        <a href="#" class="settings-item" id="switchAccountBtn"><i class="fas fa-exchange-alt"></i><div class="settings-item-content"><div class="settings-item-title">切换账号</div><div class="settings-item-desc">最多可添加10个账号</div></div><i class="fas fa-chevron-right settings-item-arrow"></i></a>
-                        <a href="#" class="settings-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><div class="settings-item-content"><div class="settings-item-title">退出登录</div><div class="settings-item-desc">安全退出当前账号</div></div><i class="fas fa-chevron-right settings-item-arrow"></i></a>
-                    </div>
-                </div>
-                <div id="chatPage" class="chat-page">
-                    <div class="chat-container">
-                        <div id="groupAnnouncement" class="announcement hidden">
-                            <div class="announcement-title"><i class="fas fa-bullhorn"></i><span>群公告</span></div>
-                            <div class="announcement-content" id="announcementContent"></div>
-                            <div class="announcement-time" id="announcementTime"></div>
-                        </div>
-                        <div class="chat-messages" id="chatMessages"></div>
-                        <div class="chat-input-container">
-                            <div id="replyPreview" class="reply-preview hidden">
-                                <div class="reply-info"><div class="reply-sender" id="replySender"></div><div class="reply-text" id="replyText"></div></div>
-                                <button class="cancel-reply" id="cancelReplyBtn"><i class="fas fa-times"></i></button>
+                    <div class="reveal" style="transition-delay: 0.2s">
+                        <div class="aspect-square rounded-3xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 p-8 relative overflow-hidden">
+                            <div class="absolute inset-0 opacity-30">
+                                <svg width="100%" height="100%" viewBox="0 0 400 400">
+                                    <defs>
+                                        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:var(--accent);stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:var(--accent-warm);stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle cx="200" cy="200" r="150" fill="none" stroke="url(#grad)" stroke-width="0.5" opacity="0.5"/>
+                                    <circle cx="200" cy="200" r="120" fill="none" stroke="url(#grad)" stroke-width="0.5" opacity="0.4"/>
+                                    <circle cx="200" cy="200" r="90" fill="none" stroke="url(#grad)" stroke-width="0.5" opacity="0.3"/>
+                                    <circle cx="200" cy="200" r="60" fill="none" stroke="url(#grad)" stroke-width="0.5" opacity="0.2"/>
+                                </svg>
                             </div>
-                            <div class="chat-input-wrapper">
-                                <input type="text" class="chat-input" id="messageInput" placeholder="输入消息..." maxlength="500">
-                                <button class="send-btn" id="sendMessageBtn"><i class="fas fa-paper-plane"></i></button>
+                            <div class="relative z-10 h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="w-3 h-3 rounded-full bg-accent mb-4"></div>
+                                    <h3 class="text-2xl font-bold">游戏ACE</h3>
+                                </div>
+                                <p class="text-muted">
+                                    还在为ACE扫爆盘而烦恼吗？快来用我们的过ACE去奔放吧！
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="bottom-nav" id="bottomNav">
-            <a href="#" class="nav-item active" data-page="friends"><i class="fas fa-user-friends"></i><span>好友</span></a>
-            <a href="#" class="nav-item" data-page="groups"><i class="fas fa-users"></i><span>群聊</span></a>
-            <a href="#" class="nav-item" data-page="profile"><i class="fas fa-user"></i><span>我的</span></a>
-        </div>
-    </div>
-    <!-- 添加好友模态框 -->
-    <div id="addFriendModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">添加好友</h3><button class="modal-close" id="closeAddFriendModal">&times;</button></div>
-            <div class="modal-body">
-                <div class="form-group"><label for="friendUsernameInput" class="form-label">好友用户名</label><input type="text" id="friendUsernameInput" class="form-input" placeholder="输入要添加的好友用户名"></div>
-                <div id="friendSearchResult" class="hidden"></div>
-            </div>
-            <div class="modal-footer"><button class="btn btn-secondary" id="cancelAddFriend">取消</button><button class="btn btn-primary" id="searchFriendBtn">搜索并发送请求</button></div>
-        </div>
-    </div>
-    <!-- 群聊模态框 -->
-    <div id="groupModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title" id="groupModalTitle">创建群聊</h3><button class="modal-close" id="closeGroupModal">&times;</button></div>
-            <div class="modal-body">
-                <div class="form-group"><label for="groupNameInput" class="form-label">群聊名称</label><input type="text" id="groupNameInput" class="form-input" placeholder="请输入群聊名称（最多10个字）"><div id="groupNameCount" class="char-count">0/10</div></div>
-                <div class="form-group"><label for="groupDescriptionInput" class="form-label">群聊描述（可选）</label><textarea id="groupDescriptionInput" class="form-input form-textarea" placeholder="请输入群聊描述" maxlength="200"></textarea><div id="groupDescriptionCount" class="char-count">0/200</div></div>
-                <div id="inviteCodeSection" class="hidden"><div class="form-group"><label for="inviteCodeInput" class="form-label">群聊邀请码</label><input type="text" id="inviteCodeInput" class="form-input" placeholder="请输入群聊邀请码"></div></div>
-            </div>
-            <div class="modal-footer"><button class="btn btn-secondary" id="cancelGroupBtn">取消</button><button class="btn btn-primary" id="createGroupBtn">创建</button><button class="btn btn-primary hidden" id="joinGroupBtn">加入</button></div>
-        </div>
-    </div>
-    <!-- 个人设置模态框 -->
-    <div id="profileSettingsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">个人资料与安全</h3><button class="modal-close" id="closeProfileSettingsModal">&times;</button></div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">头像</label>
-                    <div class="avatar-upload"><img id="settingsAvatarPreview" class="avatar-preview hidden" src="" alt="头像预览"><div id="settingsAvatarPlaceholder" class="avatar-placeholder-large"><i class="fas fa-user"></i></div><div class="upload-btn" id="settingsAvatarUploadBtn"><i class="fas fa-cloud-upload-alt"></i><div class="upload-text">更换头像</div><input type="file" id="settingsAvatarFile" accept="image/*" class="hidden"></div></div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="section">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 reveal">
+                    <span class="text-accent text-sm tracking-widest uppercase">我们的产品</span>
+                    <h2 class="section-title mt-4">有的都有</h2>
                 </div>
-                <div class="form-group"><label for="settingsDisplayName" class="form-label">显示名称</label><input type="text" id="settingsDisplayName" class="form-input" placeholder="请输入显示名称（最多10个字）"><div id="settingsDisplayNameCount" class="char-count">0/10</div></div>
-                <div class="form-group"><label for="settingsRealName" class="form-label">真实姓名</label><input type="text" id="settingsRealName" class="form-input" placeholder="请输入真实姓名（最多10个字）"><div id="settingsRealNameCount" class="char-count">0/10</div></div>
-                <div class="form-group"><label for="settingsUsername" class="form-label">用户名</label><input type="text" id="settingsUsername" class="form-input" placeholder="请输入用户名" disabled></div>
-                <div class="form-group"><label for="settingsPassword" class="form-label">修改密码</label><input type="password" id="settingsPassword" class="form-input" placeholder="请输入新密码（留空则不修改）"></div>
-                <div class="form-group">
-                    <label class="form-label">隐私设置</label>
-                    <div style="margin-top: 8px;"><label class="form-label" style="font-weight: normal; font-size: 14px;"><input type="checkbox" id="requireVerificationCheckbox" style="margin-right: 8px;">需要验证才能添加我为好友</label></div>
-                    <div style="margin-top: 8px;"><label class="form-label" style="font-weight: normal; font-size: 14px;"><input type="checkbox" id="requireGroupApprovalCheckbox" style="margin-right: 8px;">需要我同意才能邀请我加入群聊</label></div>
-                </div>
-            </div>
-            <div class="modal-footer"><button class="btn btn-secondary" id="cancelProfileSettings">取消</button><button class="btn btn-primary" id="saveProfileSettings">保存更改</button></div>
-        </div>
-    </div>
-    <!-- 切换账号模态框 -->
-    <div id="switchAccountModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">切换账号</h3><button class="modal-close" id="closeSwitchAccountModal">&times;</button></div>
-            <div class="modal-body">
-                <div id="accountList" class="account-list"></div>
-                <div class="empty-state" id="noAccountsMessage" style="display: none;"><i class="fas fa-user-slash empty-icon"></i><h3 class="empty-title">暂无其他账号</h3><p class="empty-description">您可以在登录页面添加新账号</p></div>
-                <button class="btn btn-primary" id="addAccountBtn" style="width: 100%; margin-top: 20px;"><i class="fas fa-plus"></i> 添加账号</button>
-            </div>
-        </div>
-    </div>
-    <!-- 好友备注模态框 -->
-    <div id="friendNoteModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">设置好友备注</h3><button class="modal-close" id="closeFriendNoteModal">&times;</button></div>
-            <div class="modal-body"><div class="form-group"><label for="friendNoteInput" class="form-label">好友备注</label><input type="text" id="friendNoteInput" class="form-input" placeholder="请输入好友备注（可选，最多10个字）" maxlength="10"><div id="friendNoteCount" class="char-count">0/10</div></div></div>
-            <div class="modal-footer"><button class="btn btn-secondary" id="cancelFriendNote">取消</button><button class="btn btn-primary" id="saveFriendNote">保存备注</button></div>
-        </div>
-    </div>
-    <!-- 群聊备注模态框 -->
-    <div id="groupNoteModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">设置群聊备注</h3><button class="modal-close" id="closeGroupNoteModal">&times;</button></div>
-            <div class="modal-body"><div class="form-group"><label for="groupNoteInput" class="form-label">群聊备注</label><input type="text" id="groupNoteInput" class="form-input" placeholder="请输入群聊备注（可选，最多10个字）" maxlength="10"><div id="groupNoteCount" class="char-count">0/10</div></div></div>
-            <div class="modal-footer"><button class="btn btn-secondary" id="cancelGroupNote">取消</button><button class="btn btn-primary" id="saveGroupNote">保存备注</button></div>
-        </div>
-    </div>
-    <!-- 好友管理模态框 -->
-    <div id="friendManageModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">管理好友</h3><button class="modal-close" id="closeFriendManageModal">&times;</button></div>
-            <div class="modal-body">
-                <div id="friendInfo" style="text-align: center; margin-bottom: 24px;"><div id="friendAvatarPreview" class="avatar-placeholder-large" style="margin: 0 auto 16px; width: 80px; height: 80px; font-size: 32px;"></div><h3 id="friendDisplayName" style="margin-bottom: 8px;"></h3><p id="friendUsername" style="color: var(--gray-color);"></p><p id="friendNoteDisplay" class="friend-note" style="margin-top: 8px;"></p></div>
-                <div style="display: flex; flex-direction: column; gap: 12px;"><button class="btn btn-secondary" id="editFriendNoteBtn"><i class="fas fa-sticky-note" style="margin-right: 8px;"></i>设置备注</button><button class="btn btn-warning" id="blockFriendBtn"><i class="fas fa-ban" style="margin-right: 8px;"></i>拉黑好友</button><button class="btn btn-danger" id="deleteFriendBtn"><i class="fas fa-trash" style="margin-right: 8px;"></i>删除好友</button></div>
-            </div>
-        </div>
-    </div>
-    <!-- 群聊设置模态框（修复版） -->
-    <div id="groupSettingsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">群聊设置</h3><button class="modal-close" id="closeGroupSettingsModal">&times;</button></div>
-            <div class="modal-body">
-                <div id="groupSettingsInfo" style="text-align: center; margin-bottom: 20px;">
-                    <div id="groupSettingsAvatar" class="avatar-placeholder-large" style="margin: 0 auto 12px; width: 80px; height: 80px; font-size: 32px;"></div>
-                    <h3 id="groupSettingsName"></h3>
-                    <p id="groupSettingsDesc" style="color: var(--gray-color); font-size: 14px;"></p>
-                </div>
-                <div class="group-invite-code">
-                    <div class="group-invite-code-value" id="groupInviteCode"></div>
-                    <div class="group-invite-code-label">群聊邀请码</div>
-                </div>
-                <div class="group-settings-section">
-                    <div class="group-settings-title">群成员</div>
-                    <div class="group-member-list" id="groupMemberList"></div>
-                </div>
-                <div class="group-settings-section">
-                    <div class="group-settings-title">群聊操作</div>
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <button class="btn btn-secondary" id="editGroupNoteBtn"><i class="fas fa-sticky-note" style="margin-right: 8px;"></i>设置群聊备注</button>
-                        <button class="btn btn-danger" id="exitGroupBtn"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>退出群聊</button>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="card reveal" style="transition-delay: 0.1s">
+                        <span class="card-number font-display">01</span>
+                        <div class="service-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <path d="M3 9h18"/>
+                                <path d="M9 21V9"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">拥有我们的卡网</h3>
+                        <p class="text-muted">从概念到上线，打造响应式、高性能的现代卡网体验</p>
+                    </div>
+
+                    <div class="card reveal" style="transition-delay: 0.2s">
+                        <span class="card-number font-display">02</span>
+                        <div class="service-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">卡密时间</h3>
+                        <p class="text-muted">终究每个版本更新一次卡密，卡密到期时间为2099年</p>
+                    </div>
+
+                    <div class="card reveal" style="transition-delay: 0.3s">
+                        <span class="card-number font-display">03</span>
+                        <div class="service-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">版本通知</h3>
+                        <p class="text-muted">在登录页面左下角有个最新版本的通知</p>
+                    </div>
+
+                    <div class="card reveal" style="transition-delay: 0.4s">
+                        <span class="card-number font-display">04</span>
+                        <div class="service-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">启动动画</h3>
+                        <p class="text-muted">通过启动动画UI审美，让所有人都看得上我们的产品</p>
+                    </div>
+
+                    <div class="card reveal" style="transition-delay: 0.5s">
+                        <span class="card-number font-display">05</span>
+                        <div class="service-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">渲染绘制</h3>
+                        <p class="text-muted">拥有彩色变化的绘制3D效果和2D效果</p>
+                    </div>
+
+                    <div class="card reveal" style="transition-delay: 0.6s">
+                        <span class="card-number font-display">06</span>
+                        <div class="service-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">角落提示</h3>
+                        <p class="text-muted">让用户们去懂我们产品每个实时位置的提示</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Works Section -->
+        <section id="works" class="section">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 reveal">
+                    <span class="text-accent text-sm tracking-widest uppercase">辅助展示</span>
+                    <h2 class="section-title mt-4">功能项目</h2>
+                </div>
+
+                <div class="works-grid">
+                    <div class="work-item reveal" style="transition-delay: 0.1s">
+                        <div style="width:100%;height:100%;background:linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);"></div>
+                        <div class="work-overlay">
+                            <span class="text-accent text-sm">其他功能</span>
+                            <h3 class="text-xl font-semibold mt-1">子弹穿墙</h3>
+                        </div>
+                    </div>
+
+                    <div class="work-item reveal" style="transition-delay: 0.2s">
+                        <div style="width:100%;height:100%;background:linear-gradient(135deg, #2d132c 0%, #801336 100%);"></div>
+                        <div class="work-overlay">
+                            <span class="text-accent text-sm">联机功能</span>
+                            <h3 class="text-xl font-semibold mt-1">原连连跳</h3>
+                        </div>
+                    </div>
+
+                    <div class="work-item reveal" style="transition-delay: 0.3s">
+                        <div style="width:100%;height:100%;background:linear-gradient(135deg, #0f3460 0%, #16537e 100%);"></div>
+                        <div class="work-overlay">
+                            <span class="text-accent text-sm">页面UI</span>
+                            <h3 class="text-xl font-semibold mt-1">精美简洁</h3>
+                        </div>
+                    </div>
+
+                    <div class="work-item reveal" style="transition-delay: 0.4s">
+                        <div style="width:100%;height:100%;background:linear-gradient(135deg, #1b262c 0%, #0f4c75 100%);"></div>
+                        <div class="work-overlay">
+                            <span class="text-accent text-sm">其他功能</span>
+                            <h3 class="text-xl font-semibold mt-1">无限子弹</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12 reveal">
+                    <button class="btn btn-gradient-outline">
+                        查看更多功能
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-16 reveal">
+                    <span class="text-accent text-sm tracking-widest uppercase">联系团队</span>
+                    <h2 class="section-title mt-4">反馈问题</h2>
+                    <p class="section-subtitle mt-4 mx-auto">有问题就一起让我们一起把它解决掉</p>
+                </div>
+
+                <form class="space-y-6 reveal" style="transition-delay: 0.2s">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <input type="text" placeholder="您的称呼" class="form-input">
+                        <input type="email" placeholder="电子邮箱" class="form-input">
+                    </div>
+                    <input type="text" placeholder="Bug问题（没有可跳过）" class="form-input">
+                    <textarea rows="5" placeholder="意见" class="form-input resize-none"></textarea>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            提交反馈
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13"/>
+                                <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid md:grid-cols-4 gap-12">
+                    <div class="md:col-span-2">
+                        <h3 class="font-display text-2xl font-bold">
+                            <span class="text-accent">D</span>I<span class="text-accent-warm">Y</span>
+                        </h3>
+                        <p class="text-muted mt-4 max-w-md">
+                            在数码宇宙里，智能设备如同璀璨星辰，以科技之光点亮生活每一处角落，开启未来无限可能✨
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-4">关于部门</h4>
+                        <ul class="space-y-3 text-muted">
+                            <li><a href="#about" class="hover:text-accent transition-colors">关于</a></li>
+                            <li><a href="#services" class="hover:text-accent transition-colors">产品</a></li>
+                            <li><a href="#contact" class="hover:text-accent transition-colors">反馈</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-4">联系方式</h4>
+                        <ul class="space-y-3 text-muted">
+                            <li>deyumohan@svip.com</li>
+                            <li>+86 190 7148 3261</li>
+                            <li>深圳市腾讯计算机系统有限公司</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-muted text-sm">2026 DIY 保留所有权利。</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-muted hover:border-accent hover:text-accent transition-all" aria-label="微信">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.5 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm5 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                <path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.936 1.444 5.544 3.684 7.227L5 22l3.5-2c1.07.3 2.2.467 3.382.467 5.523 0 10-4.145 10-9.244C22 6.145 17.523 2 12 2z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center text-muted hover:border-accent hover:text-accent transition-all" aria-label="微博">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10.098 20c-4.612 0-8.361-2.463-8.361-5.5 0-3.037 3.749-5.5 8.361-5.5.896 0 1.757.095 2.566.271a5.07 5.07 0 0 1-.164-1.271c0-2.485 2.015-4.5 4.5-4.5 2.486 0 4.5 2.015 4.5 4.5 0 .613-.123 1.197-.345 1.732.025 0 .05-.002.075-.002 2.209 0 4 1.791 4 4s-1.791 4-4 4c-.565 0-1.104-.118-1.594-.33C17.932 18.655 14.313 20 10.098 20z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
-    <!-- 上下文菜单 -->
-    <div id="messageContextMenu" class="context-menu hidden"><div class="context-menu-item" id="replyMessageBtn"><i class="fas fa-reply"></i><span>回复</span></div><div class="context-menu-item" id="deleteMessageBtn"><i class="fas fa-trash"></i><span>删除</span></div></div>
-    <div id="avatarContextMenu" class="context-menu hidden"><div class="context-menu-item" id="mentionUserBtn"><i class="fas fa-at"></i><span>@提及</span></div></div>
-    <div id="memberContextMenu" class="context-menu hidden"><div class="context-menu-item" id="mentionMemberBtn"><i class="fas fa-at"></i><span>@提及</span></div><div class="context-menu-item" id="addFriendFromGroupBtn"><i class="fas fa-user-plus"></i><span>添加好友</span></div></div>
-    <!-- 提示容器 -->
-    <div id="toastContainer"></div>
-<script>
-// 数据存储
-let currentUser = null;
-let users = JSON.parse(localStorage.getItem('socialUsers')) || [];
-let friends = JSON.parse(localStorage.getItem('socialFriends')) || [];
-let friendRequests = JSON.parse(localStorage.getItem('socialFriendRequests')) || [];
-let groups = JSON.parse(localStorage.getItem('socialGroups')) || [];
-let userGroups = JSON.parse(localStorage.getItem('socialUserGroups')) || [];
-let groupAdmins = JSON.parse(localStorage.getItem('socialGroupAdmins')) || [];
-let groupAnnouncements = JSON.parse(localStorage.getItem('socialGroupAnnouncements')) || [];
-let messages = JSON.parse(localStorage.getItem('socialMessages')) || [];
-let mutedUsers = JSON.parse(localStorage.getItem('socialMutedUsers')) || [];
-let blockedUsers = JSON.parse(localStorage.getItem('socialBlockedUsers')) || [];
-let groupBlockedUsers = JSON.parse(localStorage.getItem('socialGroupBlockedUsers')) || [];
-let friendNotes = JSON.parse(localStorage.getItem('socialFriendNotes')) || [];
-let groupNotes = JSON.parse(localStorage.getItem('socialGroupNotes')) || [];
-let accounts = JSON.parse(localStorage.getItem('socialAccounts')) || [];
-let currentChat = null, currentGroup = null, replyingToMessage = null, contextMenuTarget = null, currentGroupSettingsId = null;
-const MAX_NAME_LENGTH = 10, MAX_USERNAME_LENGTH = 20, MAX_GROUP_DESCRIPTION = 200, MAX_GROUP_MEMBERS = 100;
-let syncInterval = null, lastMessageCount = 0, lastFriendRequestCount = 0;
 
-// 初始化数据
-function initializeStorage() {
-    if (users.length === 0) {
-        users = [
-            { id: 1, username: 'zhangsan', password: '123456', displayName: '张三', realName: '张三', avatar: '', avatarColor: '#3498db', registerDate: '2026-01-15', settings: { requireVerification: false, requireGroupApproval: true } },
-            { id: 2, username: 'lisi', password: '123456', displayName: '李四', realName: '李四', avatar: '', avatarColor: '#e74c3c', registerDate: '2026-01-20', settings: { requireVerification: false, requireGroupApproval: false } },
-            { id: 3, username: 'wangwu', password: '123456', displayName: '王五', realName: '王五', avatar: '', avatarColor: '#2ecc71', registerDate: '2026-02-01', settings: { requireVerification: true, requireGroupApproval: true } }
-        ];
-        localStorage.setItem('socialUsers', JSON.stringify(users));
-    }
-    if (groups.length === 0) {
-        groups = [
-            { id: 1, name: '游戏交流群', description: '为游戏而开发的项目', color: '#3498db', creatorId: 1, inviteCode: 'FRONT2026', members: [1, 2], isPublic: true, createTime: '2026-01-10 10:30:00' },
-            { id: 2, name: '综合外部群', description: '我命由我不由天', color: '#2ecc71', creatorId: 2, inviteCode: 'BOOK2026', members: [2, 3], isPublic: true, createTime: '2026-01-15 14:20:00' },
-            { id: 3, name: '扩列聊天', description: '周末一起打游戏', color: '#f39c12', creatorId: 3, inviteCode: 'GAME2026', members: [1, 3], isPublic: false, createTime: '2026-01-20 18:45:00' }
-        ];
-        localStorage.setItem('socialGroups', JSON.stringify(groups));
-        userGroups = [{ userId: 1, groupId: 1 }, { userId: 1, groupId: 3 }, { userId: 2, groupId: 1 }, { userId: 2, groupId: 2 }, { userId: 3, groupId: 2 }, { userId: 3, groupId: 3 }];
-        localStorage.setItem('socialUserGroups', JSON.stringify(userGroups));
-        groupAdmins = [{ groupId: 1, userId: 1, isCreator: true }, { groupId: 1, userId: 2, isCreator: false }, { groupId: 2, userId: 2, isCreator: true }, { groupId: 3, userId: 3, isCreator: true }];
-        localStorage.setItem('socialGroupAdmins', JSON.stringify(groupAdmins));
-        groupAnnouncements = [
-            { id: 1, groupId: 1, content: '50皮肤70定制6坐骑12武器迷你号1581995328密码yun227521', creatorId: 1, createTime: '2026-01-10 11:00:00', updateTime: '2026-01-10 11:00:00' },
-            { id: 2, groupId: 2, content: '请勿刷屏', creatorId: 2, createTime: '2026-01-15 15:00:00', updateTime: '2026-01-15 15:00:00' }
-        ];
-        localStorage.setItem('socialGroupAnnouncements', JSON.stringify(groupAnnouncements));
-    }
-    if (friends.length === 0) {
-        friends = [{ userId: 1, friendId: 2 }, { userId: 2, friendId: 1 }, { userId: 2, friendId: 3 }, { userId: 3, friendId: 2 }];
-        localStorage.setItem('socialFriends', JSON.stringify(friends));
-    }
-    if (messages.length === 0) {
-        messages = [
-            { id: 1, senderId: 1, receiverId: 2, type: 'friend', content: '你好，李四！', timestamp: '2026-01-15 10:30:00', isRead: true },
-            { id: 2, senderId: 2, receiverId: 1, type: 'friend', content: '你好，张三！最近怎么样？', timestamp: '2026-01-15 10:32:00', isRead: true },
-            { id: 3, senderId: 1, receiverId: 2, type: 'friend', content: '还不错，正在开发一个新项目。', timestamp: '2026-01-15 10:35:00', isRead: true },
-            { id: 4, senderId: 1, groupId: 1, type: 'group', content: '不愧是德宇大牛啊！', timestamp: '2026-01-10 11:00:00', isRead: true },
-            { id: 5, senderId: 2, groupId: 1, type: 'group', content: '谢谢群主！请多关照。', timestamp: '2026-01-10 11:05:00', isRead: true },
-            { id: 6, senderId: 3, groupId: 2, type: 'group', content: '通缉令王超！！！', timestamp: '2026-01-16 09:00:00', isRead: true }
-        ];
-        localStorage.setItem('socialMessages', JSON.stringify(messages));
-    }
-}
+    <script>
+        // Initialize variables first
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = 0;
+        let height = 0;
+        let particles = [];
+        let mouse = { x: 0, y: 0 };
+        let animationId = null;
 
-// 从localStorage重新加载所有数据
-function reloadAllData() {
-    users = JSON.parse(localStorage.getItem('socialUsers')) || users;
-    friends = JSON.parse(localStorage.getItem('socialFriends')) || friends;
-    friendRequests = JSON.parse(localStorage.getItem('socialFriendRequests')) || friendRequests;
-    groups = JSON.parse(localStorage.getItem('socialGroups')) || groups;
-    userGroups = JSON.parse(localStorage.getItem('socialUserGroups')) || userGroups;
-    groupAdmins = JSON.parse(localStorage.getItem('socialGroupAdmins')) || groupAdmins;
-    groupAnnouncements = JSON.parse(localStorage.getItem('socialGroupAnnouncements')) || groupAnnouncements;
-    messages = JSON.parse(localStorage.getItem('socialMessages')) || messages;
-    blockedUsers = JSON.parse(localStorage.getItem('socialBlockedUsers')) || blockedUsers;
-    friendNotes = JSON.parse(localStorage.getItem('socialFriendNotes')) || friendNotes;
-    groupNotes = JSON.parse(localStorage.getItem('socialGroupNotes')) || groupNotes;
-    accounts = JSON.parse(localStorage.getItem('socialAccounts')) || accounts;
-}
+        // Check reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// 实时同步功能
-function startRealtimeSync() {
-    if (syncInterval) clearInterval(syncInterval);
-    syncInterval = setInterval(() => {
-        if (!currentUser) return;
-        reloadAllData();
-        const currentMessageCount = messages.length;
-        const currentFriendRequestCount = friendRequests.filter(r => r.toUserId === currentUser.id && r.status === 'pending').length;
-        // 检查新消息
-        if (currentMessageCount > lastMessageCount) {
-            const newMessages = messages.slice(lastMessageCount);
-            newMessages.forEach(msg => {
-                if (msg.senderId !== currentUser.id) {
-                    if (msg.type === 'friend' && msg.receiverId === currentUser.id) {
-                        const sender = users.find(u => u.id === msg.senderId);
-                        if (sender && (!currentChat || currentChat.type !== 'friend' || currentChat.id !== sender.id)) {
-                            showToast(`新消息来自 ${truncateName(sender.displayName)}`, 'success');
-                        }
-                    } else if (msg.type === 'group') {
-                        const sender = users.find(u => u.id === msg.senderId);
-                        const group = groups.find(g => g.id === msg.groupId);
-                        if (sender && group && (!currentChat || currentChat.type !== 'group' || currentChat.id !== group.id)) {
-                            showToast(`${truncateName(sender.displayName)} 在 ${truncateName(group.name)} 发送了消息`, 'success');
-                        }
-                    }
+        // Particle class
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Mouse interaction
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 150) {
+                    const force = (150 - distance) / 150;
+                    this.x -= dx * force * 0.02;
+                    this.y -= dy * force * 0.02;
                 }
-            });
-            // 如果在聊天界面，刷新消息
-            if (currentChat) loadChatMessages();
+
+                // Boundary check
+                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                const safeSize = Math.max(0.1, this.size);
+                const safeOpacity = Math.min(1, Math.max(0, this.opacity));
+                
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, safeSize, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 255, 213, ${safeOpacity})`;
+                ctx.fill();
+            }
         }
-        lastMessageCount = currentMessageCount;
-        // 检查新好友请求
-        if (currentFriendRequestCount > lastFriendRequestCount) {
-            showToast('您有新的好友请求', 'success');
-            updateFriendsPage();
+
+        // Resize handler
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Reinitialize particles on resize
+            const particleCount = Math.min(80, Math.floor((width * height) / 15000));
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
         }
-        lastFriendRequestCount = currentFriendRequestCount;
-        // 更新通知计数
-        updateNotificationCount();
-        // 如果在好友页面，刷新列表
-        const friendsPage = document.getElementById('friendsPage');
-        if (friendsPage && friendsPage.classList.contains('active')) updateFriendsPage();
-        // 如果在群聊页面，刷新列表
-        const groupsPage = document.getElementById('groupsPage');
-        if (groupsPage && groupsPage.classList.contains('active')) updateGroupsPage();
-    }, 2000); // 每2秒同步一次
-}
 
-function stopRealtimeSync() { if (syncInterval) { clearInterval(syncInterval); syncInterval = null; } }
-
-function getAvatarUrl(user) { return (user.avatar && user.avatar.startsWith('data:')) ? user.avatar : ''; }
-
-function showToast(message, type = 'success') {
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `<span>${message}</span><button class="toast-close">&times;</button>`;
-    document.getElementById('toastContainer').appendChild(toast);
-    toast.querySelector('.toast-close').addEventListener('click', () => toast.remove());
-    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
-}
-
-function getCharCount(text) { return text ? text.replace(/[^\x00-\xff]/g, "  ").length : 0; }
-
-function checkNameLength(text, maxLen = MAX_NAME_LENGTH) {
-    const charCount = getCharCount(text);
-    return { isValid: charCount <= maxLen, charCount: charCount, maxLength: maxLen };
-}
-
-function updateCharCount(inputId, countId, maxLen) {
-    const input = document.getElementById(inputId), countElement = document.getElementById(countId);
-    if (!input || !countElement) return;
-    input.addEventListener('input', function() {
-        const result = checkNameLength(this.value, maxLen);
-        countElement.textContent = `${result.charCount}/${maxLen}`;
-        countElement.classList.remove('warning', 'danger');
-        if (result.charCount > maxLen * 0.8) countElement.classList.add('warning');
-        if (result.charCount > maxLen) countElement.classList.add('danger');
-    });
-    const initialResult = checkNameLength(input.value || '', maxLen);
-    countElement.textContent = `${initialResult.charCount}/${maxLen}`;
-}
-
-function validateNameLength(text, fieldName, maxLen = MAX_NAME_LENGTH) {
-    const result = checkNameLength(text, maxLen);
-    if (!result.isValid) { showToast(`${fieldName}不能超过${maxLen}个字符，当前${result.charCount}个字符`, 'error'); return false; }
-    return true;
-}
-
-function truncateName(name, maxLen = MAX_NAME_LENGTH) {
-    if (!name) return '';
-    let result = '', charCount = 0;
-    for (let i = 0; i < name.length; i++) {
-        const isFullWidth = /[^\x00-\xff]/.test(name[i]);
-        charCount += isFullWidth ? 1 : 0.5;
-        if (charCount <= maxLen) result += name[i]; else break;
-    }
-    return result;
-}
-
-function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    const pageName = pageId.replace('Page', ''), navItem = document.querySelector(`.nav-item[data-page="${pageName}"]`);
-    if (navItem) navItem.classList.add('active');
-    if (pageId === 'friendsPage') updateFriendsPage();
-    else if (pageId === 'groupsPage') updateGroupsPage();
-    else if (pageId === 'profilePage') updateProfilePage();
-}
-
-function showAuthPage() {
-    stopRealtimeSync();
-    document.getElementById('appPage').classList.add('hidden');
-    document.getElementById('authPage').classList.remove('hidden');
-    document.getElementById('loginUsername').value = '';
-    document.getElementById('loginPassword').value = '';
-}
-
-function showAppPage() {
-    document.getElementById('authPage').classList.add('hidden');
-    document.getElementById('appPage').classList.remove('hidden');
-    updateProfilePage(); updateFriendsPage(); updateGroupsPage(); updateNotificationCount();
-    lastMessageCount = messages.length;
-    lastFriendRequestCount = friendRequests.filter(r => r.toUserId === currentUser.id && r.status === 'pending').length;
-    startRealtimeSync();
-}
-
-function updateProfilePage() {
-    if (!currentUser) return;
-    const avatarUrl = getAvatarUrl(currentUser), profileAvatarImg = document.getElementById('profileAvatarImg'), profileAvatarPlaceholder = document.getElementById('profileAvatarPlaceholder');
-    if (avatarUrl) { profileAvatarImg.src = avatarUrl; profileAvatarImg.classList.remove('hidden'); profileAvatarPlaceholder.classList.add('hidden'); }
-    else { profileAvatarImg.classList.add('hidden'); profileAvatarPlaceholder.classList.remove('hidden'); profileAvatarPlaceholder.style.backgroundColor = currentUser.avatarColor || '#3498db'; profileAvatarPlaceholder.innerHTML = currentUser.displayName ? truncateName(currentUser.displayName.charAt(0).toUpperCase()) : '?'; }
-    document.getElementById('profileName').textContent = truncateName(currentUser.displayName) || '用户名称';
-    document.getElementById('profileUsername').textContent = `@${currentUser.username}`;
-    document.getElementById('profileFriendCount').textContent = friends.filter(f => f.userId === currentUser.id).length;
-    document.getElementById('profileGroupCount').textContent = userGroups.filter(ug => ug.userId === currentUser.id).length;
-}
-
-function updateFriendsPage() {
-    if (!currentUser) return;
-    reloadAllData();
-    updateFriendsList(); loadFriendRequests(); loadBlockedFriends(); updateNotificationCount();
-    document.getElementById('friendsCount').textContent = `${friends.filter(f => f.userId === currentUser.id).length} 位好友`;
-}
-
-function updateFriendsList() {
-    const friendsList = document.getElementById('friendsList'), friendsEmpty = document.getElementById('friendsEmpty');
-    const userFriends = friends.filter(f => f.userId === currentUser.id);
-    if (userFriends.length === 0) { friendsList.innerHTML = ''; if (friendsEmpty) friendsEmpty.classList.remove('hidden'); return; }
-    if (friendsEmpty) friendsEmpty.classList.add('hidden'); friendsList.innerHTML = '';
-    userFriends.forEach(friendRelation => {
-        const friend = users.find(u => u.id === friendRelation.friendId);
-        if (!friend) return;
-        const isBlocked = blockedUsers.some(b => b.userId === currentUser.id && b.blockedUserId === friend.id);
-        if (isBlocked) return;
-        const avatarUrl = getAvatarUrl(friend), displayName = truncateName(friend.displayName), firstLetter = displayName ? displayName.charAt(0).toUpperCase() : '?', friendNote = getFriendNote(friend.id), displayFriendNote = friendNote ? truncateName(friendNote) : '';
-        const friendCard = document.createElement('div'); friendCard.className = 'card';
-        friendCard.innerHTML = `<div class="card-header">${avatarUrl ? `<img src="${avatarUrl}" alt="${displayName}" class="avatar">` : `<div class="avatar-placeholder" style="background-color: ${friend.avatarColor || '#3498db'}">${firstLetter}</div>`}<div class="card-info"><div class="card-title">${displayName}</div><div class="card-subtitle">@${friend.username}</div>${displayFriendNote ? `<div class="friend-note">备注：${displayFriendNote}</div>` : ''}</div></div><div class="card-actions"><button class="btn btn-primary chat-with-friend-btn" data-id="${friend.id}">聊天</button><button class="btn btn-secondary manage-friend-btn" data-id="${friend.id}">管理</button></div>`;
-        friendsList.appendChild(friendCard);
-    });
-    document.querySelectorAll('.chat-with-friend-btn').forEach(btn => btn.addEventListener('click', function() { startChatWithFriend(parseInt(this.getAttribute('data-id'))); }));
-    document.querySelectorAll('.manage-friend-btn').forEach(btn => btn.addEventListener('click', function() { openFriendManageModal(parseInt(this.getAttribute('data-id'))); }));
-}
-
-function getFriendNote(friendId) { const note = friendNotes.find(n => n.userId === currentUser.id && n.friendId === friendId); return note ? note.note : ''; }
-
-function startChatWithFriend(friendId) {
-    const friend = users.find(u => u.id === friendId); if (!friend) return;
-    currentChat = { type: 'friend', id: friendId, name: truncateName(friend.displayName) };
-    switchToChatPage(); document.getElementById('chatTitle').textContent = truncateName(friend.displayName); document.getElementById('chatSubtitle').textContent = '在线';
-    loadChatMessages(); document.getElementById('groupAnnouncement').classList.add('hidden');
-}
-
-function enterGroup(groupId) {
-    const group = groups.find(g => g.id === groupId); if (!group) return;
-    currentChat = { type: 'group', id: groupId, name: truncateName(group.name) }; currentGroup = group;
-    switchToChatPage(); document.getElementById('chatTitle').textContent = truncateName(group.name);
-    document.getElementById('chatSubtitle').textContent = `${userGroups.filter(ug => ug.groupId === groupId).length} 人`;
-    const announcement = groupAnnouncements.find(a => a.groupId === groupId);
-    if (announcement) { document.getElementById('groupAnnouncement').classList.remove('hidden'); document.getElementById('announcementContent').textContent = announcement.content; document.getElementById('announcementTime').textContent = `更新时间：${formatTime(announcement.updateTime)}`; }
-    else { document.getElementById('groupAnnouncement').classList.add('hidden'); }
-    loadChatMessages();
-}
-
-function switchToChatPage() {
-    document.querySelector('.main-header').classList.add('hidden'); document.getElementById('chatHeader').classList.remove('hidden');
-    document.getElementById('bottomNav').classList.add('hidden'); document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById('chatPage').classList.add('active'); cancelReply(); setTimeout(() => document.getElementById('messageInput').focus(), 100);
-}
-
-function backToMainPage() {
-    document.querySelector('.main-header').classList.remove('hidden'); document.getElementById('chatHeader').classList.add('hidden');
-    document.getElementById('bottomNav').classList.remove('hidden'); document.getElementById('chatPage').classList.remove('active');
-    currentChat = null; currentGroup = null; showPage('friendsPage');
-}
-
-function loadChatMessages() {
-    if (!currentChat) return;
-    reloadAllData();
-    const chatMessages = document.getElementById('chatMessages'); chatMessages.innerHTML = '';
-    let chatMessagesList = [];
-    if (currentChat.type === 'friend') { chatMessagesList = messages.filter(msg => msg.type === 'friend' && ((msg.senderId === currentUser.id && msg.receiverId === currentChat.id) || (msg.senderId === currentChat.id && msg.receiverId === currentUser.id))).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); }
-    else if (currentChat.type === 'group') { chatMessagesList = messages.filter(msg => msg.type === 'group' && msg.groupId === currentChat.id).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); }
-    if (chatMessagesList.length === 0) { const emptyState = document.createElement('div'); emptyState.className = 'empty-state'; emptyState.innerHTML = `<i class="fas fa-comments empty-icon"></i><h3 class="empty-title">还没有消息</h3><p class="empty-description">发送第一条消息开始聊天吧</p>`; chatMessages.appendChild(emptyState); return; }
-    chatMessagesList.forEach(message => {
-        const sender = users.find(u => u.id === message.senderId); if (!sender) return;
-        const isOwn = message.senderId === currentUser.id, avatarUrl = getAvatarUrl(sender), displayName = truncateName(sender.displayName), firstLetter = displayName ? displayName.charAt(0).toUpperCase() : '?', formattedTime = formatTime(message.timestamp);
-        const messageDiv = document.createElement('div'); messageDiv.className = `message ${isOwn ? 'own' : ''}`; messageDiv.setAttribute('data-message-id', message.id);
-        let messageContent = message.content, replyIndicator = '';
-        if (message.replyTo) { const repliedMessage = messages.find(m => m.id === message.replyTo); if (repliedMessage) { const repliedSender = users.find(u => u.id === repliedMessage.senderId); if (repliedSender) { replyIndicator = `<div class="reply-indicator">回复 ${truncateName(repliedSender.displayName)}: ${repliedMessage.content.substring(0, 50)}${repliedMessage.content.length > 50 ? '...' : ''}</div>`; } } }
-        messageDiv.innerHTML = `${!isOwn ? `${avatarUrl ? `<img src="${avatarUrl}" alt="${displayName}" class="message-avatar" data-user-id="${sender.id}">` : `<div class="message-avatar avatar-placeholder" style="width: 40px; height: 40px; background-color: ${sender.avatarColor || '#3498db'}" data-user-id="${sender.id}">${firstLetter}</div>`}` : ''}<div class="message-content" data-message-id="${message.id}">${!isOwn && currentChat.type === 'group' ? `<div class="message-sender">${displayName}</div>` : ''}${replyIndicator}<div class="message-text">${messageContent}</div><div class="message-time">${formattedTime}</div></div>${isOwn ? `${avatarUrl ? `<img src="${avatarUrl}" alt="${displayName}" class="message-avatar" data-user-id="${sender.id}">` : `<div class="message-avatar avatar-placeholder" style="width: 40px; height: 40px; background-color: ${sender.avatarColor || '#3498db'}" data-user-id="${sender.id}">${firstLetter}</div>`}` : ''}`;
-        chatMessages.appendChild(messageDiv);
-    });
-    setTimeout(() => chatMessages.scrollTop = chatMessages.scrollHeight, 100);
-    document.querySelectorAll('.message-content').forEach(content => content.addEventListener('contextmenu', function(e) { e.preventDefault(); showMessageContextMenu(this, e.clientX, e.clientY); }));
-}
-
-function sendMessage() {
-    if (!currentChat || !currentUser) return;
-    const messageInput = document.getElementById('messageInput'), content = messageInput.value.trim();
-    if (!content) { showToast('请输入消息内容', 'error'); return; }
-    if (currentChat.type === 'group') { const isMuted = mutedUsers.some(m => m.userId === currentUser.id && m.groupId === currentChat.id && new Date(m.until) > new Date()); if (isMuted) { showToast('您已被禁言，暂时无法发送消息', 'error'); return; } }
-    const newMessage = { id: messages.length > 0 ? Math.max(...messages.map(m => m.id)) + 1 : 1, senderId: currentUser.id, type: currentChat.type, content: content, timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19), isRead: false };
-    if (currentChat.type === 'friend') newMessage.receiverId = currentChat.id; else if (currentChat.type === 'group') newMessage.groupId = currentChat.id;
-    if (replyingToMessage) newMessage.replyTo = replyingToMessage.id;
-    messages.push(newMessage); localStorage.setItem('socialMessages', JSON.stringify(messages));
-    messageInput.value = ''; cancelReply(); loadChatMessages();
-    lastMessageCount = messages.length;
-}
-
-function formatTime(timestamp) {
-    const date = new Date(timestamp), now = new Date();
-    if (date.toDateString() === now.toDateString()) return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-    const yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1);
-    if (date.toDateString() === yesterday.toDateString()) return '昨天 ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-    if (now - date < 7 * 24 * 60 * 60 * 1000) { const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']; return days[date.getDay()] + ' ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }); }
-    return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-}
-
-function replyToMessage(messageId) {
-    const message = messages.find(m => m.id === messageId); if (!message) return;
-    const sender = users.find(u => u.id === message.senderId); if (!sender) return;
-    replyingToMessage = message; document.getElementById('replyPreview').classList.remove('hidden');
-    document.getElementById('replySender').textContent = `回复 ${truncateName(sender.displayName)}`;
-    document.getElementById('replyText').textContent = message.content.length > 50 ? message.content.substring(0, 50) + '...' : message.content;
-    document.getElementById('messageInput').focus();
-}
-
-function cancelReply() { replyingToMessage = null; document.getElementById('replyPreview').classList.add('hidden'); }
-
-function deleteMessage(messageId) { if (!confirm('确定要删除这条消息吗？')) return; messages = messages.filter(m => m.id !== messageId); localStorage.setItem('socialMessages', JSON.stringify(messages)); loadChatMessages(); showToast('消息已删除', 'success'); }
-
-function showMessageContextMenu(targetElement, x, y) {
-    const messageId = targetElement.getAttribute('data-message-id'); if (!messageId) return;
-    const message = messages.find(m => m.id == messageId); if (!message) return;
-    document.getElementById('deleteMessageBtn').style.display = message.senderId === currentUser.id ? 'block' : 'none';
-    contextMenuTarget = { type: 'message', id: messageId };
-    const menu = document.getElementById('messageContextMenu'); menu.style.left = x + 'px'; menu.style.top = y + 'px'; menu.classList.remove('hidden');
-    document.getElementById('replyMessageBtn').onclick = function() { replyToMessage(messageId); hideContextMenus(); };
-    document.getElementById('deleteMessageBtn').onclick = function() { deleteMessage(messageId); hideContextMenus(); };
-}
-
-function hideContextMenus() { document.querySelectorAll('.context-menu').forEach(menu => menu.classList.add('hidden')); }
-
-function sendFriendRequest(toUserId) {
-    const alreadyFriend = friends.find(f => (f.userId === currentUser.id && f.friendId === toUserId) || (f.userId === toUserId && f.friendId === currentUser.id));
-    if (alreadyFriend) { showToast('该用户已经是您的好友', 'error'); return false; }
-    const existingRequest = friendRequests.find(r => r.fromUserId === currentUser.id && r.toUserId === toUserId && r.status === 'pending');
-    if (existingRequest) { showToast('您已发送过好友请求，请等待对方处理', 'warning'); return false; }
-    const isBlocked = blockedUsers.find(b => b.userId === toUserId && b.blockedUserId === currentUser.id);
-    if (isBlocked) { showToast('您已被对方拉黑，无法发送好友请求', 'error'); return false; }
-    const friendRequest = { id: friendRequests.length > 0 ? Math.max(...friendRequests.map(r => r.id)) + 1 : 1, fromUserId: currentUser.id, toUserId: toUserId, status: 'pending', createdAt: new Date().toISOString() };
-    friendRequests.push(friendRequest); localStorage.setItem('socialFriendRequests', JSON.stringify(friendRequests));
-    updateNotificationCount(); return true;
-}
-
-function handleFriendRequest(requestId, accept) {
-    const request = friendRequests.find(r => r.id === requestId); if (!request) return;
-    if (accept) { friends.push({ userId: request.fromUserId, friendId: request.toUserId }); friends.push({ userId: request.toUserId, friendId: request.fromUserId }); localStorage.setItem('socialFriends', JSON.stringify(friends)); showToast('已同意好友请求', 'success'); }
-    else { showToast('已拒绝好友请求', 'info'); }
-    request.status = accept ? 'accepted' : 'rejected'; request.processedAt = new Date().toISOString();
-    localStorage.setItem('socialFriendRequests', JSON.stringify(friendRequests));
-    updateFriendsPage(); updateNotificationCount(); loadFriendRequests();
-}
-
-function loadFriendRequests() {
-    if (!currentUser) return;
-    reloadAllData();
-    const friendRequestsList = document.getElementById('friendRequestsList'), noRequests = document.getElementById('noRequests');
-    const receivedRequests = friendRequests.filter(r => r.toUserId === currentUser.id && r.status === 'pending');
-    if (receivedRequests.length === 0) { friendRequestsList.innerHTML = ''; if (noRequests) noRequests.style.display = 'flex'; return; }
-    if (noRequests) noRequests.style.display = 'none'; friendRequestsList.innerHTML = '';
-    receivedRequests.forEach(request => {
-        const fromUser = users.find(u => u.id === request.fromUserId); if (!fromUser) return;
-        const avatarUrl = getAvatarUrl(fromUser), displayName = truncateName(fromUser.displayName), firstLetter = displayName ? displayName.charAt(0).toUpperCase() : '?';
-        const requestItem = document.createElement('div'); requestItem.className = 'friend-request-item';
-        requestItem.innerHTML = `${avatarUrl ? `<img src="${avatarUrl}" alt="${displayName}" class="avatar" style="width: 50px; height: 50px;">` : `<div class="avatar-placeholder" style="width: 50px; height: 50px; background-color: ${fromUser.avatarColor || '#3498db'}">${firstLetter}</div>`}<div class="friend-request-info"><div class="friend-request-name">${displayName}</div><div class="friend-request-username">@${fromUser.username}</div></div><div class="friend-request-actions"><button class="btn btn-primary accept-friend-request" data-id="${request.id}">同意</button><button class="btn btn-secondary reject-friend-request" data-id="${request.id}">拒绝</button></div>`;
-        friendRequestsList.appendChild(requestItem);
-    });
-    document.querySelectorAll('.accept-friend-request').forEach(btn => btn.addEventListener('click', function() { handleFriendRequest(parseInt(this.getAttribute('data-id')), true); }));
-    document.querySelectorAll('.reject-friend-request').forEach(btn => btn.addEventListener('click', function() { handleFriendRequest(parseInt(this.getAttribute('data-id')), false); }));
-}
-
-function updateNotificationCount() {
-    if (!currentUser) return;
-    reloadAllData();
-    const pendingRequests = friendRequests.filter(r => r.toUserId === currentUser.id && r.status === 'pending').length;
-    const notificationBadge = document.getElementById('notificationCount');
-    if (notificationBadge) { 
-        notificationBadge.textContent = pendingRequests > 0 ? pendingRequests.toString() : ''; 
-        if (pendingRequests > 0) notificationBadge.classList.remove('hidden');
-        else notificationBadge.classList.add('hidden');
-    }
-}
-
-function updateGroupsPage() {
-    if (!currentUser) return;
-    reloadAllData();
-    const groupsList = document.getElementById('groupsList'), groupsEmpty = document.getElementById('groupsEmpty');
-    const userGroupIds = userGroups.filter(ug => ug.userId === currentUser.id).map(ug => ug.groupId), userGroupList = groups.filter(g => userGroupIds.includes(g.id));
-    document.getElementById('groupsCount').textContent = `${userGroupList.length} 个群聊`;
-    if (userGroupList.length === 0) { groupsList.innerHTML = ''; groupsEmpty.classList.remove('hidden'); return; }
-    groupsEmpty.classList.add('hidden'); groupsList.innerHTML = '';
-    userGroupList.forEach(group => {
-        const memberCount = userGroups.filter(ug => ug.groupId === group.id).length, isCreator = group.creatorId === currentUser.id, creator = users.find(u => u.id === group.creatorId), displayCreatorName = creator ? truncateName(creator.displayName) : '未知用户', firstLetter = truncateName(group.name).charAt(0).toUpperCase() || '?', groupNote = getGroupNote(group.id), displayGroupName = groupNote ? truncateName(groupNote) : truncateName(group.name);
-        const groupCard = document.createElement('div'); groupCard.className = 'card';
-        groupCard.innerHTML = `<div class="card-header"><div class="avatar-placeholder" style="background-color: ${group.color || '#3498db'}">${firstLetter}</div><div class="card-info"><div class="card-title">${displayGroupName}</div><div class="card-subtitle">${memberCount} 名成员 · ${isCreator ? '您是群主' : `创建者: ${displayCreatorName}`}</div>${group.description ? `<div class="card-subtitle" style="margin-top: 5px;">${truncateName(group.description, 30)}</div>` : ''}${groupNote ? `<div class="friend-note">原群名：${truncateName(group.name)}</div>` : ''}</div></div><div class="card-actions"><button class="btn btn-primary enter-group-btn" data-id="${group.id}">进入</button><button class="btn btn-secondary group-settings-btn" data-id="${group.id}">设置</button></div>`;
-        groupsList.appendChild(groupCard);
-    });
-    document.querySelectorAll('.enter-group-btn').forEach(btn => btn.addEventListener('click', function() { enterGroup(parseInt(this.getAttribute('data-id'))); }));
-    document.querySelectorAll('.group-settings-btn').forEach(btn => btn.addEventListener('click', function() { openGroupSettings(parseInt(this.getAttribute('data-id'))); }));
-}
-
-function getGroupNote(groupId) { const note = groupNotes.find(n => n.userId === currentUser.id && n.groupId === groupId); return note ? note.note : ''; }
-
-// 打开群聊设置（修复版）
-function openGroupSettings(groupId) {
-    reloadAllData();
-    const group = groups.find(g => g.id === groupId);
-    if (!group) { showToast('群聊不存在', 'error'); return; }
-    currentGroupSettingsId = groupId;
-    const isCreator = group.creatorId === currentUser.id;
-    const isAdmin = groupAdmins.some(a => a.groupId === groupId && a.userId === currentUser.id);
-    
-    document.getElementById('groupSettingsModal').classList.add('active');
-    document.getElementById('groupSettingsName').textContent = truncateName(group.name);
-    document.getElementById('groupSettingsDesc').textContent = group.description || '暂无描述';
-    document.getElementById('groupInviteCode').textContent = group.inviteCode;
-    
-    const avatarEl = document.getElementById('groupSettingsAvatar');
-    avatarEl.innerHTML = truncateName(group.name).charAt(0).toUpperCase();
-    avatarEl.style.backgroundColor = group.color || '#3498db';
-    
-    // 加载群成员列表
-    const memberList = document.getElementById('groupMemberList');
-    memberList.innerHTML = '';
-    const memberIds = userGroups.filter(ug => ug.groupId === groupId).map(ug => ug.userId);
-    memberIds.forEach(memberId => {
-        const member = users.find(u => u.id === memberId);
-        if (!member) return;
-        const isMemberCreator = group.creatorId === memberId;
-        const isMemberAdmin = groupAdmins.some(a => a.groupId === groupId && a.userId === memberId);
-        const avatarUrl = getAvatarUrl(member);
-        const displayName = truncateName(member.displayName);
-        const firstLetter = displayName ? displayName.charAt(0).toUpperCase() : '?';
-        const memberItem = document.createElement('div');
-        memberItem.className = 'group-member-item';
-        memberItem.innerHTML = `${avatarUrl ? `<img src="${avatarUrl}" class="group-member-avatar">` : `<div class="group-member-avatar" style="background-color: ${member.avatarColor || '#3498db'}; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">${firstLetter}</div>`}<div class="group-member-info"><div class="group-member-name">${displayName} ${memberId === currentUser.id ? '(我)' : ''}</div><div class="group-member-role">${isMemberCreator ? '群主' : (isMemberAdmin ? '管理员' : '成员')}</div></div>`;
-        memberList.appendChild(memberItem);
-    });
-    
-    // 设置退出群聊按钮
-    const exitBtn = document.getElementById('exitGroupBtn');
-    exitBtn.onclick = function() {
-        if (!confirm(`确定要退出群聊 "${truncateName(group.name)}" 吗？`)) return;
-        exitGroup(groupId);
-    };
-    
-    // 设置群聊备注按钮
-    document.getElementById('editGroupNoteBtn').onclick = function() {
-        document.getElementById('groupSettingsModal').classList.remove('active');
-        document.getElementById('groupNoteInput').value = getGroupNote(groupId) || '';
-        document.getElementById('groupNoteModal').classList.add('active');
-        document.getElementById('saveGroupNote').onclick = function() {
-            const note = document.getElementById('groupNoteInput').value.trim();
-            setGroupNote(groupId, note);
-            document.getElementById('groupNoteModal').classList.remove('active');
-            openGroupSettings(groupId);
-        };
-    };
-}
-
-// 退出群聊
-function exitGroup(groupId) {
-    reloadAllData();
-    const group = groups.find(g => g.id === groupId);
-    if (!group) { showToast('群聊不存在', 'error'); return; }
-    
-    // 从userGroups中移除
-    userGroups = userGroups.filter(ug => !(ug.userId === currentUser.id && ug.groupId === groupId));
-    localStorage.setItem('socialUserGroups', JSON.stringify(userGroups));
-    
-    // 从groupAdmins中移除（如果是管理员）
-    groupAdmins = groupAdmins.filter(a => !(a.groupId === groupId && a.userId === currentUser.id));
-    localStorage.setItem('socialGroupAdmins', JSON.stringify(groupAdmins));
-    
-    // 如果是群主，需要转移群主或删除群聊
-    if (group.creatorId === currentUser.id) {
-        const remainingMembers = userGroups.filter(ug => ug.groupId === groupId);
-        if (remainingMembers.length > 0) {
-            // 转移给第一个成员
-            const newCreatorId = remainingMembers[0].userId;
-            group.creatorId = newCreatorId;
-            localStorage.setItem('socialGroups', JSON.stringify(groups));
-            showToast(`您已退出群聊，群主已转移给 ${truncateName(users.find(u => u.id === newCreatorId)?.displayName || '新群主')}`, 'success');
-        } else {
-            // 删除群聊
-            groups = groups.filter(g => g.id !== groupId);
-            localStorage.setItem('socialGroups', JSON.stringify(groups));
-            groupAnnouncements = groupAnnouncements.filter(a => a.groupId !== groupId);
-            localStorage.setItem('socialGroupAnnouncements', JSON.stringify(groupAnnouncements));
-            showToast('群聊已解散', 'success');
-        }
-    } else {
-        showToast(`您已退出群聊 "${truncateName(group.name)}"`, 'success');
-    }
-    
-    document.getElementById('groupSettingsModal').classList.remove('active');
-    updateGroupsPage();
-    updateProfilePage();
-    
-    // 如果正在该群聊的聊天界面，返回主页
-    if (currentChat && currentChat.type === 'group' && currentChat.id === groupId) {
-        backToMainPage();
-    }
-}
-
-function setGroupNote(groupId, note) {
-    if (!validateNameLength(note, "群聊备注", MAX_NAME_LENGTH)) return;
-    const existingNoteIndex = groupNotes.findIndex(n => n.userId === currentUser.id && n.groupId === groupId);
-    if (existingNoteIndex >= 0) { groupNotes[existingNoteIndex].note = truncateName(note); groupNotes[existingNoteIndex].updatedAt = new Date().toISOString(); }
-    else { groupNotes.push({ id: groupNotes.length > 0 ? Math.max(...groupNotes.map(n => n.id)) + 1 : 1, userId: currentUser.id, groupId: groupId, note: truncateName(note), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }); }
-    localStorage.setItem('socialGroupNotes', JSON.stringify(groupNotes)); updateGroupsPage(); showToast('群聊备注已保存', 'success');
-}
-
-function setFriendNote(friendId, note) {
-    if (!validateNameLength(note, "好友备注", MAX_NAME_LENGTH)) return;
-    const existingNoteIndex = friendNotes.findIndex(n => n.userId === currentUser.id && n.friendId === friendId);
-    if (existingNoteIndex >= 0) { friendNotes[existingNoteIndex].note = truncateName(note); friendNotes[existingNoteIndex].updatedAt = new Date().toISOString(); }
-    else { friendNotes.push({ id: friendNotes.length > 0 ? Math.max(...friendNotes.map(n => n.id)) + 1 : 1, userId: currentUser.id, friendId: friendId, note: truncateName(note), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }); }
-    localStorage.setItem('socialFriendNotes', JSON.stringify(friendNotes)); updateFriendsList(); showToast('好友备注已保存', 'success');
-}
-
-function blockFriend(friendId) {
-    if (!confirm('确定要拉黑此好友吗？拉黑后将无法接收对方的消息和好友请求。')) return;
-    blockedUsers.push({ id: blockedUsers.length > 0 ? Math.max(...blockedUsers.map(b => b.id)) + 1 : 1, userId: currentUser.id, blockedUserId: friendId, blockedAt: new Date().toISOString() });
-    friends = friends.filter(f => !(f.userId === currentUser.id && f.friendId === friendId)); friends = friends.filter(f => !(f.userId === friendId && f.friendId === currentUser.id));
-    localStorage.setItem('socialBlockedUsers', JSON.stringify(blockedUsers)); localStorage.setItem('socialFriends', JSON.stringify(friends));
-    updateFriendsPage(); showToast('已拉黑该好友', 'success');
-    // 如果被拉黑的好友正在聊天，返回主页
-    if (currentChat && currentChat.type === 'friend' && currentChat.id === friendId) {
-        backToMainPage();
-        showToast('您已拉黑该好友，聊天已结束', 'info');
-    }
-}
-
-function unblockFriend(friendId) {
-    blockedUsers = blockedUsers.filter(b => !(b.userId === currentUser.id && b.blockedUserId === friendId));
-    localStorage.setItem('socialBlockedUsers', JSON.stringify(blockedUsers));
-    loadBlockedFriends(); showToast('已取消拉黑', 'success');
-}
-
-function loadBlockedFriends() {
-    if (!currentUser) return;
-    reloadAllData();
-    const blockedList = document.getElementById('blockedList'), noBlocked = document.getElementById('noBlocked');
-    const userBlocked = blockedUsers.filter(b => b.userId === currentUser.id);
-    if (userBlocked.length === 0) { blockedList.innerHTML = ''; if (noBlocked) noBlocked.style.display = 'flex'; return; }
-    if (noBlocked) noBlocked.style.display = 'none'; blockedList.innerHTML = '';
-    userBlocked.forEach(block => {
-        const blockedUser = users.find(u => u.id === block.blockedUserId); if (!blockedUser) return;
-        const avatarUrl = getAvatarUrl(blockedUser), displayName = truncateName(blockedUser.displayName), firstLetter = displayName ? displayName.charAt(0).toUpperCase() : '?';
-        const blockedCard = document.createElement('div'); blockedCard.className = 'card';
-        blockedCard.innerHTML = `<div class="card-header">${avatarUrl ? `<img src="${avatarUrl}" alt="${displayName}" class="avatar">` : `<div class="avatar-placeholder" style="background-color: ${blockedUser.avatarColor || '#3498db'}">${firstLetter}</div>`}<div class="card-info"><div class="card-title">${displayName}</div><div class="card-subtitle">@${blockedUser.username}</div><div class="friend-note">已拉黑</div></div></div><div class="card-actions"><button class="btn btn-primary unblock-friend-btn" data-id="${blockedUser.id}">取消拉黑</button></div>`;
-        blockedList.appendChild(blockedCard);
-    });
-    document.querySelectorAll('.unblock-friend-btn').forEach(btn => btn.addEventListener('click', function() { unblockFriend(parseInt(this.getAttribute('data-id'))); }));
-}
-
-function openFriendManageModal(friendId) {
-    reloadAllData();
-    const friend = users.find(u => u.id === friendId); if (!friend) return;
-    const avatarUrl = getAvatarUrl(friend), displayName = truncateName(friend.displayName), firstLetter = displayName ? displayName.charAt(0).toUpperCase() : '?', friendNote = getFriendNote(friend.id), displayFriendNote = friendNote ? truncateName(friendNote) : '';
-    document.getElementById('friendDisplayName').textContent = displayName; document.getElementById('friendUsername').textContent = `@${friend.username}`; document.getElementById('friendNoteDisplay').textContent = displayFriendNote ? `备注：${displayFriendNote}` : '';
-    const avatarPreview = document.getElementById('friendAvatarPreview');
-    if (avatarUrl) { avatarPreview.innerHTML = `<img src="${avatarUrl}" alt="${displayName}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`; } else { avatarPreview.innerHTML = firstLetter; avatarPreview.style.backgroundColor = friend.avatarColor || '#3498db'; }
-    document.getElementById('editFriendNoteBtn').onclick = function() { document.getElementById('friendNoteInput').value = friendNote || ''; document.getElementById('friendManageModal').classList.remove('active'); setTimeout(() => { document.getElementById('friendNoteModal').classList.add('active'); }, 300); document.getElementById('saveFriendNote').onclick = function() { const note = document.getElementById('friendNoteInput').value.trim(); setFriendNote(friendId, note); document.getElementById('friendNoteModal').classList.remove('active'); openFriendManageModal(friendId); }; };
-    document.getElementById('blockFriendBtn').onclick = function() { blockFriend(friendId); document.getElementById('friendManageModal').classList.remove('active'); };
-    document.getElementById('deleteFriendBtn').onclick = function() { if (!confirm('确定要删除此好友吗？此操作不可撤销。')) return; friends = friends.filter(f => !(f.userId === currentUser.id && f.friendId === friendId)); friends = friends.filter(f => !(f.userId === friendId && f.friendId === currentUser.id)); localStorage.setItem('socialFriends', JSON.stringify(friends)); updateFriendsPage(); document.getElementById('friendManageModal').classList.remove('active'); showToast('好友已删除', 'success'); };
-    document.getElementById('friendManageModal').classList.add('active');
-}
-
-function getRandomColor() { const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#1abc9c', '#d35400']; return colors[Math.floor(Math.random() * colors.length)]; }
-
-function generateInviteCode() { const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let result = ''; for (let i = 0; i < 8; i++) result += chars.charAt(Math.floor(Math.random() * chars.length)); return result; }
-
-function initEventListeners() {
-    // 登录
-    document.getElementById('loginBtn').addEventListener('click', function() {
-        const username = document.getElementById('loginUsername').value.trim(), password = document.getElementById('loginPassword').value;
-        if (!username || !password) { showToast('请输入用户名和密码', 'error'); return; }
-        const user = users.find(u => u.username === username && u.password === password);
-        if (user) { currentUser = user; localStorage.setItem('socialCurrentUser', JSON.stringify(user)); if (!accounts.find(a => a.username === user.username)) { accounts.push({ username: user.username, displayName: user.displayName, avatar: user.avatar, avatarColor: user.avatarColor }); localStorage.setItem('socialAccounts', JSON.stringify(accounts)); } showAppPage(); showToast('登录成功！', 'success'); }
-        else { showToast('用户名或密码错误', 'error'); }
-    });
-    
-    // 注册下一步
-    document.getElementById('registerNextBtn').addEventListener('click', function() {
-        const username = document.getElementById('registerUsername').value.trim(), password = document.getElementById('registerPassword').value, confirmPassword = document.getElementById('confirmPassword').value;
-        if (username.length < 3 || username.length > MAX_USERNAME_LENGTH) { showToast(`用户名长度应为3-${MAX_USERNAME_LENGTH}个字符`, 'error'); return; }
-        if (password.length < 6) { showToast('密码长度至少为6个字符', 'error'); return; }
-        if (password !== confirmPassword) { showToast('两次输入的密码不一致', 'error'); return; }
-        if (users.find(u => u.username === username)) { showToast('用户名已存在，请选择其他用户名', 'error'); return; }
-        sessionStorage.setItem('tempRegisterUsername', username); sessionStorage.setItem('tempRegisterPassword', password);
-        document.getElementById('step1').classList.remove('active'); document.getElementById('step2').classList.add('active');
-        document.getElementById('registerStep1').classList.add('hidden'); document.getElementById('registerStep2').classList.remove('hidden');
-    });
-    
-    // 完成注册
-    document.getElementById('registerCompleteBtn').addEventListener('click', function() {
-        const displayName = document.getElementById('displayName').value.trim(), realName = document.getElementById('realName').value.trim();
-        if (!validateNameLength(displayName, "显示名称", MAX_NAME_LENGTH)) return;
-        if (!validateNameLength(realName, "真实姓名", MAX_NAME_LENGTH)) return;
-        const username = sessionStorage.getItem('tempRegisterUsername'), password = sessionStorage.getItem('tempRegisterPassword');
-        const newUser = { id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1, username: username, password: password, displayName: truncateName(displayName), realName: truncateName(realName), avatar: '', avatarColor: getRandomColor(), registerDate: new Date().toISOString().split('T')[0], settings: { requireVerification: false, requireGroupApproval: true } };
-        users.push(newUser); localStorage.setItem('socialUsers', JSON.stringify(users));
-        sessionStorage.removeItem('tempRegisterUsername'); sessionStorage.removeItem('tempRegisterPassword');
-        currentUser = newUser; localStorage.setItem('socialCurrentUser', JSON.stringify(newUser));
-        accounts.push({ username: newUser.username, displayName: newUser.displayName, avatar: newUser.avatar, avatarColor: newUser.avatarColor }); localStorage.setItem('socialAccounts', JSON.stringify(accounts));
-        showAppPage(); showToast('注册成功！欢迎使用社交平台', 'success');
-    });
-    
-    document.getElementById('backToStep1').addEventListener('click', function(e) { e.preventDefault(); document.getElementById('step1').classList.add('active'); document.getElementById('step2').classList.remove('active'); document.getElementById('registerStep1').classList.remove('hidden'); document.getElementById('registerStep2').classList.add('hidden'); });
-    
-    document.querySelectorAll('.auth-tab').forEach(tab => tab.addEventListener('click', function() { const tabId = this.getAttribute('data-tab'); document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active')); this.classList.add('active'); document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active')); document.getElementById(tabId + 'Form').classList.add('active'); }));
-    document.getElementById('goToRegister').addEventListener('click', function(e) { e.preventDefault(); document.querySelector('.auth-tab[data-tab="register"]').click(); });
-    document.getElementById('goToLogin').addEventListener('click', function(e) { e.preventDefault(); document.querySelector('.auth-tab[data-tab="login"]').click(); });
-    document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', function(e) { e.preventDefault(); showPage(this.getAttribute('data-page') + 'Page'); }));
-    document.getElementById('backFromChat').addEventListener('click', backToMainPage);
-    document.getElementById('chatInfoBtn').addEventListener('click', function() { 
-        if (currentChat && currentChat.type === 'group') openGroupSettings(currentChat.id);
-        else if (currentChat && currentChat.type === 'friend') showToast('好友信息功能开发中...', 'info');
-    });
-    document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
-    document.getElementById('messageInput').addEventListener('keypress', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-    document.getElementById('cancelReplyBtn').addEventListener('click', cancelReply);
-    document.addEventListener('click', hideContextMenus);
-    
-    // 添加好友
-    document.getElementById('addFriendBtn').addEventListener('click', function() { document.getElementById('addFriendModal').classList.add('active'); document.getElementById('friendUsernameInput').value = ''; document.getElementById('friendSearchResult').classList.add('hidden'); });
-    document.getElementById('searchFriendBtn').addEventListener('click', function() {
-        const username = document.getElementById('friendUsernameInput').value.trim(), searchResult = document.getElementById('friendSearchResult');
-        if (!username) { showToast('请输入好友用户名', 'error'); return; }
-        if (username === currentUser.username) { showToast('不能添加自己为好友', 'error'); return; }
-        const friend = users.find(u => u.username === username);
-        if (!friend) { searchResult.innerHTML = '<div style="text-align: center; padding: 20px; color: #e74c3c;">用户不存在</div>'; searchResult.classList.remove('hidden'); return; }
-        const alreadyFriend = friends.find(f => f.userId === currentUser.id && f.friendId === friend.id);
-        if (alreadyFriend) { searchResult.innerHTML = '<div style="text-align: center; padding: 20px; color: #f39c12;">该用户已经是您的好友</div>'; searchResult.classList.remove('hidden'); return; }
-        const avatarUrl = getAvatarUrl(friend), displayName = truncateName(friend.displayName), firstLetter = displayName ? displayName.charAt(0).toUpperCase() : '?';
-        searchResult.innerHTML = `<div style="display: flex; align-items: center; padding: 16px; background-color: #f8f9fa; border-radius: 8px; margin-top: 16px;">${avatarUrl ? `<img src="${avatarUrl}" alt="${displayName}" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 12px;">` : `<div style="width: 50px; height: 50px; border-radius: 50%; background-color: ${friend.avatarColor || '#3498db'}; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px;">${firstLetter}</div>`}<div style="flex-grow: 1;"><div style="font-weight: 600; margin-bottom: 4px;">${displayName}</div><div style="color: #95a5a6; font-size: 14px;">@${friend.username}</div></div><button class="btn btn-primary" id="confirmAddFriendBtn" data-id="${friend.id}">发送好友请求</button></div>`;
-        searchResult.classList.remove('hidden');
-        document.getElementById('confirmAddFriendBtn').addEventListener('click', function() { const friendId = parseInt(this.getAttribute('data-id')); const targetUser = users.find(u => u.id === friendId); if (targetUser && targetUser.settings.requireVerification) showToast('对方需要验证信息，请稍后通过其他方式联系', 'warning'); else if (sendFriendRequest(friendId)) { document.getElementById('addFriendModal').classList.remove('active'); showToast('好友请求已发送', 'success'); } });
-    });
-    document.getElementById('closeAddFriendModal').addEventListener('click', function() { document.getElementById('addFriendModal').classList.remove('active'); });
-    document.getElementById('cancelAddFriend').addEventListener('click', function() { document.getElementById('addFriendModal').classList.remove('active'); });
-    
-    // 添加群聊
-    document.getElementById('addGroupBtn').addEventListener('click', function() {
-        document.getElementById('groupModal').classList.add('active'); document.getElementById('groupModalTitle').textContent = '创建群聊';
-        document.getElementById('createGroupBtn').classList.remove('hidden'); document.getElementById('joinGroupBtn').classList.add('hidden');
-        document.getElementById('inviteCodeSection').classList.add('hidden'); document.getElementById('groupNameInput').value = ''; document.getElementById('groupDescriptionInput').value = '';
-        const modalBody = document.querySelector('#groupModal .modal-body'), existingToggle = document.getElementById('groupModalToggle');
-        if (!existingToggle) {
-            const toggleHtml = `<div style="display: flex; justify-content: center; margin-bottom: 20px;"><button class="btn btn-secondary" id="groupModalToggle" style="width: auto;">切换到加入群聊</button></div>`;
-            modalBody.insertAdjacentHTML('afterbegin', toggleHtml);
-            document.getElementById('groupModalToggle').addEventListener('click', function() {
-                const isCreateMode = document.getElementById('createGroupBtn').classList.contains('hidden');
-                if (isCreateMode) { document.getElementById('groupModalTitle').textContent = '创建群聊'; document.getElementById('createGroupBtn').classList.remove('hidden'); document.getElementById('joinGroupBtn').classList.add('hidden'); document.getElementById('inviteCodeSection').classList.add('hidden'); this.textContent = '切换到加入群聊'; }
-                else { document.getElementById('groupModalTitle').textContent = '加入群聊'; document.getElementById('createGroupBtn').classList.add('hidden'); document.getElementById('joinGroupBtn').classList.remove('hidden'); document.getElementById('inviteCodeSection').classList.remove('hidden'); this.textContent = '切换到创建群聊'; }
-            });
-        }
-    });
-    document.getElementById('createGroupBtn').addEventListener('click', function() {
-        const groupName = document.getElementById('groupNameInput').value.trim(), groupDescription = document.getElementById('groupDescriptionInput').value.trim();
-        if (!validateNameLength(groupName, "群聊名称", MAX_NAME_LENGTH)) return;
-        if (!groupName) { showToast('请输入群聊名称', 'error'); return; }
-        const inviteCode = generateInviteCode(), newGroup = { id: groups.length > 0 ? Math.max(...groups.map(g => g.id)) + 1 : 1, name: truncateName(groupName), description: groupDescription, color: getRandomColor(), creatorId: currentUser.id, inviteCode: inviteCode, members: [currentUser.id], isPublic: false, createTime: new Date().toISOString().replace('T', ' ').substring(0, 19) };
-        groups.push(newGroup); localStorage.setItem('socialGroups', JSON.stringify(groups));
-        userGroups.push({ userId: currentUser.id, groupId: newGroup.id }); localStorage.setItem('socialUserGroups', JSON.stringify(userGroups));
-        groupAdmins.push({ groupId: newGroup.id, userId: currentUser.id, isCreator: true }); localStorage.setItem('socialGroupAdmins', JSON.stringify(groupAdmins));
-        document.getElementById('groupModal').classList.remove('active'); updateGroupsPage(); updateProfilePage();
-        showToast(`群聊 "${truncateName(groupName)}" 创建成功！邀请码：${inviteCode}`, 'success');
-    });
-    document.getElementById('joinGroupBtn').addEventListener('click', function() {
-        const inviteCode = document.getElementById('inviteCodeInput').value.trim().toUpperCase();
-        if (!inviteCode) { showToast('请输入邀请码', 'error'); return; }
-        const group = groups.find(g => g.inviteCode === inviteCode);
-        if (!group) { showToast('邀请码无效或群聊不存在', 'error'); return; }
-        const alreadyMember = userGroups.some(ug => ug.userId === currentUser.id && ug.groupId === group.id);
-        if (alreadyMember) { showToast('您已经是该群聊成员', 'error'); return; }
-        userGroups.push({ userId: currentUser.id, groupId: group.id }); localStorage.setItem('socialUserGroups', JSON.stringify(userGroups));
-        showToast(`成功加入群聊 "${truncateName(group.name)}"`, 'success');
-        document.getElementById('groupModal').classList.remove('active'); updateGroupsPage(); updateProfilePage(); updateNotificationCount();
-    });
-    document.getElementById('closeGroupModal').addEventListener('click', function() { document.getElementById('groupModal').classList.remove('active'); });
-    document.getElementById('cancelGroupBtn').addEventListener('click', function() { document.getElementById('groupModal').classList.remove('active'); });
-    
-    // 个人设置
-    document.getElementById('profileSettingsBtn').addEventListener('click', function(e) {
-        e.preventDefault(); document.getElementById('profileSettingsModal').classList.add('active');
-        document.getElementById('settingsDisplayName').value = currentUser.displayName || ''; document.getElementById('settingsRealName').value = currentUser.realName || '';
-        document.getElementById('settingsUsername').value = currentUser.username || ''; document.getElementById('settingsPassword').value = '';
-        document.getElementById('requireVerificationCheckbox').checked = currentUser.settings.requireVerification || false;
-        document.getElementById('requireGroupApprovalCheckbox').checked = currentUser.settings.requireGroupApproval || true;
-        const avatarUrl = getAvatarUrl(currentUser), settingsAvatarPreview = document.getElementById('settingsAvatarPreview'), settingsAvatarPlaceholder = document.getElementById('settingsAvatarPlaceholder');
-        if (avatarUrl) { settingsAvatarPreview.src = avatarUrl; settingsAvatarPreview.classList.remove('hidden'); settingsAvatarPlaceholder.classList.add('hidden'); }
-        else { settingsAvatarPreview.classList.add('hidden'); settingsAvatarPlaceholder.classList.remove('hidden'); settingsAvatarPlaceholder.style.backgroundColor = currentUser.avatarColor || '#3498db'; settingsAvatarPlaceholder.innerHTML = currentUser.displayName ? truncateName(currentUser.displayName.charAt(0).toUpperCase()) : '?'; }
-    });
-    document.getElementById('saveProfileSettings').addEventListener('click', function() {
-        const displayName = document.getElementById('settingsDisplayName').value.trim(), realName = document.getElementById('settingsRealName').value.trim(), password = document.getElementById('settingsPassword').value;
-        if (!validateNameLength(displayName, "显示名称", MAX_NAME_LENGTH)) return;
-        if (!validateNameLength(realName, "真实姓名", MAX_NAME_LENGTH)) return;
-        currentUser.displayName = truncateName(displayName); currentUser.realName = truncateName(realName);
-        currentUser.settings.requireVerification = document.getElementById('requireVerificationCheckbox').checked;
-        currentUser.settings.requireGroupApproval = document.getElementById('requireGroupApprovalCheckbox').checked;
-        if (password && password.length >= 6) currentUser.password = password;
-        const userIndex = users.findIndex(u => u.id === currentUser.id);
-        if (userIndex !== -1) { users[userIndex] = currentUser; localStorage.setItem('socialUsers', JSON.stringify(users)); localStorage.setItem('socialCurrentUser', JSON.stringify(currentUser)); }
-        const accountIndex = accounts.findIndex(a => a.username === currentUser.username);
-        if (accountIndex !== -1) { accounts[accountIndex] = { username: currentUser.username, displayName: currentUser.displayName, avatar: currentUser.avatar, avatarColor: currentUser.avatarColor }; localStorage.setItem('socialAccounts', JSON.stringify(accounts)); }
-        document.getElementById('profileSettingsModal').classList.remove('active'); updateProfilePage(); updateFriendsPage(); showToast('个人信息已更新', 'success');
-    });
-    document.getElementById('closeProfileSettingsModal').addEventListener('click', function() { document.getElementById('profileSettingsModal').classList.remove('active'); });
-    document.getElementById('cancelProfileSettings').addEventListener('click', function() { document.getElementById('profileSettingsModal').classList.remove('active'); });
-    
-    // 切换账号
-    document.getElementById('switchAccountBtn').addEventListener('click', function(e) { e.preventDefault(); document.getElementById('switchAccountModal').classList.add('active'); updateAccountList(); });
-    document.getElementById('addAccountBtn').addEventListener('click', function() { document.getElementById('switchAccountModal').classList.remove('active'); showAuthPage(); showToast('请在登录页面添加新账号', 'info'); });
-    document.getElementById('closeSwitchAccountModal').addEventListener('click', function() { document.getElementById('switchAccountModal').classList.remove('active'); });
-    
-    // 退出登录
-    document.getElementById('logoutBtn').addEventListener('click', function(e) {
-        e.preventDefault();
-        if (confirm('确定要退出登录吗？')) {
-            if (currentUser && !accounts.find(a => a.username === currentUser.username)) { accounts.push({ username: currentUser.username, displayName: currentUser.displayName, avatar: currentUser.avatar, avatarColor: currentUser.avatarColor }); localStorage.setItem('socialAccounts', JSON.stringify(accounts)); }
-            currentUser = null; localStorage.removeItem('socialCurrentUser'); stopRealtimeSync(); showAuthPage(); showToast('您已成功退出登录', 'success');
-        }
-    });
-    
-    // 选项卡
-    document.querySelectorAll('.tab[data-tab]').forEach(tab => tab.addEventListener('click', function() { const tabId = this.getAttribute('data-tab'); document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); this.classList.add('active'); document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active')); document.getElementById(`${tabId}Tab`).classList.add('active'); }));
-    
-    // 关闭模态框
-    document.getElementById('closeFriendManageModal').addEventListener('click', function() { document.getElementById('friendManageModal').classList.remove('active'); });
-    document.getElementById('closeFriendNoteModal').addEventListener('click', function() { document.getElementById('friendNoteModal').classList.remove('active'); });
-    document.getElementById('cancelFriendNote').addEventListener('click', function() { document.getElementById('friendNoteModal').classList.remove('active'); });
-    document.getElementById('closeGroupNoteModal').addEventListener('click', function() { document.getElementById('groupNoteModal').classList.remove('active'); });
-    document.getElementById('cancelGroupNote').addEventListener('click', function() { document.getElementById('groupNoteModal').classList.remove('active'); });
-    document.getElementById('closeGroupSettingsModal').addEventListener('click', function() { document.getElementById('groupSettingsModal').classList.remove('active'); });
-    document.getElementById('notificationBtn').addEventListener('click', function() { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.querySelector('.tab[data-tab="requests"]').classList.add('active'); document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active')); document.getElementById('requestsTab').classList.add('active'); showPage('friendsPage'); updateNotificationCount(); });
-    
-    // 头像上传
-    function setupAvatarUpload(inputId, previewId, placeholderId) {
-        const fileInput = document.getElementById(inputId), preview = document.getElementById(previewId), placeholder = document.getElementById(placeholderId), uploadBtn = document.getElementById(inputId.replace('File', 'Btn'));
-        uploadBtn.addEventListener('click', function() { fileInput.click(); });
-        fileInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    if (currentUser) currentUser.avatar = e.target.result;
-                    if (previewId === 'settingsAvatarPreview') { preview.src = e.target.result; preview.classList.remove('hidden'); placeholder.classList.add('hidden'); }
-                    else { preview.innerHTML = ''; const img = document.createElement('img'); img.src = e.target.result; img.className = 'avatar-preview'; preview.appendChild(img); }
-                    if (currentUser) {
-                        const userIndex = users.findIndex(u => u.id === currentUser.id);
-                        if (userIndex !== -1) { users[userIndex].avatar = e.target.result; localStorage.setItem('socialUsers', JSON.stringify(users)); localStorage.setItem('socialCurrentUser', JSON.stringify(currentUser)); }
-                        const accountIndex = accounts.findIndex(a => a.username === currentUser.username);
-                        if (accountIndex !== -1) { accounts[accountIndex].avatar = e.target.result; localStorage.setItem('socialAccounts', JSON.stringify(accounts)); }
-                        updateProfilePage();
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw connections
+            particles.forEach((particle, i) => {
+                particles.slice(i + 1).forEach(otherParticle => {
+                    const dx = particle.x - otherParticle.x;
+                    const dy = particle.y - otherParticle.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 120) {
+                        const opacity = (1 - distance / 120) * 0.15;
+                        ctx.beginPath();
+                        ctx.moveTo(particle.x, particle.y);
+                        ctx.lineTo(otherParticle.x, otherParticle.y);
+                        ctx.strokeStyle = `rgba(0, 255, 213, ${opacity})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
                     }
-                };
-                reader.readAsDataURL(this.files[0]);
+                });
+            });
+
+            // Update and draw particles
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            if (!prefersReducedMotion) {
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+
+        // Initialize canvas
+        resizeCanvas();
+        
+        if (!prefersReducedMotion) {
+            animate();
+        } else {
+            // Draw static particles for reduced motion
+            particles.forEach(particle => particle.draw());
+        }
+
+        // Event listeners
+        window.addEventListener('resize', resizeCanvas);
+
+        document.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        // Navigation scroll effect
+        const nav = document.querySelector('.nav');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
             }
         });
-    }
-    setupAvatarUpload('avatarFile', 'avatarPreview', 'avatarPreview');
-    setupAvatarUpload('settingsAvatarFile', 'settingsAvatarPreview', 'settingsAvatarPlaceholder');
-}
 
-function updateAccountList() {
-    const accountList = document.getElementById('accountList'), noAccountsMessage = document.getElementById('noAccountsMessage');
-    accountList.innerHTML = '';
-    if (accounts.length === 0) { noAccountsMessage.style.display = 'block'; return; }
-    noAccountsMessage.style.display = 'none';
-    accounts.forEach(account => {
-        const isCurrent = currentUser && account.username === currentUser.username, avatarUrl = account.avatar || '', displayName = truncateName(account.displayName), firstLetter = displayName ? displayName.charAt(0).toUpperCase() : '?';
-        const accountItem = document.createElement('div'); accountItem.className = 'account-item';
-        accountItem.innerHTML = `${avatarUrl ? `<img src="${avatarUrl}" alt="${displayName}" class="account-avatar">` : `<div class="account-avatar" style="background-color: ${account.avatarColor || '#3498db'}; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">${firstLetter}</div>`}<div class="account-info"><div class="account-name">${displayName}</div><div class="account-username">@${account.username}</div></div>${isCurrent ? '<span class="account-active">当前账号</span>' : `<button class="btn btn-primary switch-to-account-btn" data-username="${account.username}">切换</button>`}`;
-        accountList.appendChild(accountItem);
-    });
-    document.querySelectorAll('.switch-to-account-btn').forEach(btn => btn.addEventListener('click', function() { switchAccount(this.getAttribute('data-username')); }));
-}
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenu = document.querySelector('.mobile-menu');
 
-function switchAccount(username) {
-    const user = users.find(u => u.username === username);
-    if (user) { currentUser = user; localStorage.setItem('socialCurrentUser', JSON.stringify(user)); updateProfilePage(); updateFriendsPage(); updateGroupsPage(); updateNotificationCount(); document.getElementById('switchAccountModal').classList.remove('active'); showToast(`已切换到账号 @${username}`, 'success'); }
-    else { showToast('账号不存在', 'error'); }
-}
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
 
-function setupCharCounters() {
-    updateCharCount('registerUsername', 'registerUsernameCount', MAX_USERNAME_LENGTH);
-    updateCharCount('displayName', 'displayNameCount', MAX_NAME_LENGTH);
-    updateCharCount('realName', 'realNameCount', MAX_NAME_LENGTH);
-    updateCharCount('settingsDisplayName', 'settingsDisplayNameCount', MAX_NAME_LENGTH);
-    updateCharCount('settingsRealName', 'settingsRealNameCount', MAX_NAME_LENGTH);
-    updateCharCount('friendNoteInput', 'friendNoteCount', MAX_NAME_LENGTH);
-    updateCharCount('groupNoteInput', 'groupNoteCount', MAX_NAME_LENGTH);
-    updateCharCount('groupNameInput', 'groupNameCount', MAX_NAME_LENGTH);
-    updateCharCount('groupDescriptionInput', 'groupDescriptionCount', MAX_GROUP_DESCRIPTION);
-}
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
 
-function initPage() {
-    initializeStorage();
-    const savedUser = localStorage.getItem('socialCurrentUser');
-    if (savedUser) {
-        try {
-            currentUser = JSON.parse(savedUser);
-            const userExists = users.some(u => u.id === currentUser.id && u.username === currentUser.username);
-            if (userExists) showAppPage(); else { localStorage.removeItem('socialCurrentUser'); currentUser = null; showAuthPage(); }
-        } catch (e) { console.error('解析用户数据失败:', e); showAuthPage(); }
-    } else { showAuthPage(); }
-    initEventListeners(); setupCharCounters(); updateNotificationCount();
-}
+        // Scroll reveal
+        const revealElements = document.querySelectorAll('.reveal');
 
-window.addEventListener('DOMContentLoaded', initPage);
-</script>
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Initial reveal for hero elements
+        setTimeout(() => {
+            document.querySelectorAll('.hero .reveal').forEach(el => {
+                el.classList.add('active');
+            });
+        }, 100);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Form submission handling
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '反馈中';
+            btn.disabled = true;
+            
+            // Simulate form submission
+            setTimeout(() => {
+                btn.innerHTML = '反馈成功';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.disabled = false;
+                    form.reset();
+                }, 2000);
+            }, 1500);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+        // 立即下载按钮功能
+        const downloadBtn = document.getElementById('downloadBtn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', async () => {
+                // 跳转到指定网站
+                window.open('https://wwbxk.lanzouv.com/b00wn6dckd', '_blank');
+                
+                // 复制文本到剪贴板
+                try {
+                    await navigator.clipboard.writeText('dau1');
+                    alert('已复制文本到剪贴板: dau1');
+                } catch (err) {
+                    console.error('复制失败:', err);
+                    // 后备方案
+                    const textArea = document.createElement('textarea');
+                    textArea.value = 'dau1';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('已复制文本到剪贴板: dau1');
+                }
+            });
+        }
+
+        // 立即购买按钮功能
+        const purchaseBtn = document.getElementById('purchaseBtn');
+        if (purchaseBtn) {
+            purchaseBtn.addEventListener('click', () => {
+                // 跳转到指定网站
+                window.open('https://new.818fka.com/shop/deyumohan/pb7k1v', '_blank');
+            });
+        }
+    </script>
 </body>
 </html>
